@@ -1,0 +1,33 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend for the carbon footprint app. ",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "client": "npm run start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "nodemon server.js",
+    "cred": "export GOOGLE_APPLICATION_CREDENTIALS='/Users/8coolguy/Documents/GitHub/carbon-footprint-web/test-app2-177a1-firebase-adminsdk-1y1qw-31fac0bbd3.json'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/8coolguy/carbon-footprint-web.git"
+  },
+  "author": "Arnav Choudhury",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/8coolguy/carbon-footprint-web/issues"
+  },
+  "homepage": "https://github.com/8coolguy/carbon-footprint-web#readme",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "client": "^0.0.1",
+    "concurrently": "^7.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "firebase-admin": "^11.0.0",
+    "morgan": "^1.10.0"
+  }
+}

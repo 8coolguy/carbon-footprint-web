@@ -1,1 +1,4 @@
 *.pyc
+node_modules
+*.env
+test-app2-177a1-firebase-adminsdk-1y1qw-31fac0bbd3.json

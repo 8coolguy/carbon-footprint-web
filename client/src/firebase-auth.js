@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -10,6 +11,7 @@ import { getAuth } from "firebase/auth";
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_apiKey,
   authDomain: "test-app2-177a1.firebaseapp.com",
+  databaseURL:"https://test-app2-177a1-default-rtdb.firebaseio.com/",
   projectId: "test-app2-177a1",
   storageBucket: "test-app2-177a1.appspot.com",
   messagingSenderId: "723263322838",
@@ -18,7 +20,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
+export const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
 export const auth = getAuth(app);
+export const provider = new GoogleAuthProvider();
 

@@ -1,6 +1,7 @@
 import React,{useState} from 'react';
 import {GoogleAuthProvider,signInWithPopup,createUserWithEmailAndPassword} from 'firebase/auth';
 import {auth} from '../firebase-auth';
+import {FormContainer} from '../Styles/Form.Style';
 
 
 
@@ -48,10 +49,9 @@ const Signup =()=>{
 
 
     return(
-        <div>
-            <h1>Google Login</h1>
-            <button onClick={googleSignUp}>Google Sign in</button>
+        <FormContainer>
             <form onSubmit={register}>
+                <button onClick={googleSignUp}>Google Sign in</button>
                 <label>Email</label>
                 <input value={email} onChange={(event) =>setEmail(event.target.value)}></input>
                 <label>Password</label>
@@ -60,7 +60,7 @@ const Signup =()=>{
                 <input value={verify} type="password" onChange={(event) =>setVerify(event.target.value)}></input>
                 <button type="submit">Signup</button>
             </form>
-        </div>
+        </FormContainer>
     )
 
 }

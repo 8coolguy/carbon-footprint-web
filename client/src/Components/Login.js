@@ -1,60 +1,61 @@
 //import styles
 import React, {useState, useEffect} from 'react';
-import {GoogleAuthProvider,signInWithPopup, signOut, onAuthStateChanged, signInWithEmailAndPassword} from 'firebase/auth';
-import {auth} from '../firebase-auth';
+import {signInWithPopup, signOut, onAuthStateChanged, signInWithEmailAndPassword} from 'firebase/auth';
+import {auth,app,provider} from '../firebase-auth';
+import { useNavigate } from 'react-router-dom';
+import {FormContainer} from '../Styles/Form.Style';
 
-const Login=()=> {
-  const [user,setUser] = useState({});
+const Login=({isAuth,setIsAuth})=> {
+  const navigate = useNavigate("")
   const [email, setEmail] = useState("");
   const [password,setPassword]= useState("");
+
   useEffect(() => {
-    onAuthStateChanged(auth, (currentUser) =>{
-      setUser(currentUser);
-    })
-  }, [user]);
+    if(isAuth==="true" || isAuth===true){
+      navigate("/home");
+    }
+  }, [])
   
   
   const googleLogin = async () =>{
-    const provider = new GoogleAuthProvider();
     provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
     await signInWithPopup(auth, provider)
         .then((result) => {
-            /*
-            // This gives you a Google Access Token. You can use it to access the Google API.
-            const credential = GoogleAuthProvider.credentialFromResult(result);
-            const token = credential.accessToken;
-            // The signed-in user info.
-            const user = result.user;
-            // ...
-            */
+          console.log("Logged In");
+          localStorage.setItem("isAuth", true);
+          setIsAuth(true);
+          navigate("/home");
         }).catch((error) => {
             // Handle Errors here.
             alert(error)
             // ...
         });
   }
-  const logout =  async () => {
-     await signOut(auth);
-  }
+  
   const login = async (event)=>{
     event.preventDefault();
     await signInWithEmailAndPassword(auth, email, password)
-      .then((res)=>console.log("Signup",res))
+      .then((res)=>{
+        console.log("Logged In");
+        localStorage.setItem("isAuth", true);
+        setIsAuth(true);
+        navigate("/home");
+      })
       .catch((err)=>alert(err));
   }
   return (
-    <div>
-      {user?<h1>Hello {user.displayName}<button onClick={logout}>Signout</button></h1>:<></>}
-      <button onClick={googleLogin}>Login with Google</button>
+    <FormContainer>
       
       <form onSubmit={login}>
+        <button class ="submit" onClick={googleLogin}>Login with Google</button>
         <label>Email</label>
         <input value={email} onChange={(event) =>{setEmail(event.target.value);}}></input>
         <label>Password</label>
         <input value={password} type="password" onChange={(event) =>{setPassword(event.target.value);}}></input>
         <button type="submit">Login</button>
+
       </form>
-    </div>
+    </FormContainer>
   )
 }
 
