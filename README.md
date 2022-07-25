@@ -1,2 +1,2 @@
 # carbon-footprint-web
- Track you carbon footprint app 
+Carbon footprint web app 
