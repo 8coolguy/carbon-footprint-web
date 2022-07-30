@@ -8,7 +8,7 @@
     "client": "npm run start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "nodemon server.js",
-    "cred": "export GOOGLE_APPLICATION_CREDENTIALS='/Users/8coolguy/Documents/GitHub/carbon-footprint-web/test-app2-177a1-firebase-adminsdk-1y1qw-31fac0bbd3.json'"
+    "cred": "export GOOGLE_APPLICATION_CREDENTIALS=/Users/8coolguy/Documents/GitHub/carbon-footprint-web/test-app2-177a1-firebase-adminsdk-1y1qw-31fac0bbd3.json"
   },
   "repository": {
     "type": "git",

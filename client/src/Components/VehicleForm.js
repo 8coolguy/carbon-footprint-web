@@ -4,6 +4,8 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
 import footpic from './footpriint.ico'
+import {app} from '../firebase-auth';
+import {getAuth} from "firebase/auth";
 
 class VehicleForm extends React.Component {
     constructor() {
@@ -12,8 +14,9 @@ class VehicleForm extends React.Component {
         
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-
-        this.state = {electric: '',
+        this.user="";
+        this.state = {
+                      electric: '',
                       gas: '',
                       carMileage: '',
                       airMileage: '',
@@ -37,23 +40,103 @@ class VehicleForm extends React.Component {
     }
     
     handleSubmit(event) {
+        const auth =getAuth(app);
         event.preventDefault();
         this.setState({
             submitted: true
         });
+        this.user=auth.currentUser.uid;
         this.calculateCarbon();
         
     }
-
+    electric(){
+        let total = (5 * this.state.electric / 30); 
+        let type ="energy";
+        this.createDoc(total,type);
+        return total;
+    }
+    gas(){
+        let total =(10 * this.state.gas / 30);
+        let type  ="energy";
+        this.createDoc(total,type);
+        return total;
+    }
+    carMileage(){
+        let total = (0.8 * this.state.carMileage);
+        let type = "transportation";
+        this.createDoc(total,type);
+        return total;
+    }
+    airMileage(){
+        let total =(0.43 * this.state.airMileage / 365);
+        let type ="transportation";
+        this.createDoc(total,type);
+        return total;
+    }
+    nonveg(){
+        let total=(1.5 * this.state.nonveg / 7);
+        let type ="food";
+        this.createDoc(total,type);
+        return total;
+    }
+    veg(){
+        let total= (0.3 * this.state.veg / 7);
+        let type="food";
+        this.createDoc(total,type);
+        return total;
+    }
     calculateCarbon() {
-        const totalDailyCarbon = (5 * this.state.electric / 30) + (10 * this.state.gas / 30) + (0.8 * this.state.carMileage) + (0.43 * this.state.airMileage / 365) + (1.5 * this.state.nonveg / 7) + (0.3 * this.state.veg / 7);
-        const totalMonthlyCarbon = (5 * this.state.electric) + (10 * this.state.gas) + (0.8 * this.state.carMileage * 30) + (0.43 * this.state.airMileage / 52) + (1.5 * this.state.nonveg * 4) + (0.3 * this.state.veg * 4);
-        const totalYearlyCarbon = (5 * this.state.electric * 12) + (10 * this.state.gas * 12) + (0.8 * this.state.carMileage * 350) + (0.43 * this.state.airMileage) + (1.5 * this.state.nonveg * 52) + (0.3 * this.state.veg * 52);
+        let electric = this.electric();
+        let gas =this.gas();
+        let carMileage=this.carMileage();
+        let airMileage=this.airMileage();
+        let nonveg =this.nonveg();
+        let  veg =this.veg();
+        const totalDailyCarbon = electric
+             + gas
+             + carMileage
+             + airMileage
+             + nonveg
+             + veg;
+        const totalMonthlyCarbon = this.electric()*30
+            + gas*30
+            + carMileage*30
+            + airMileage*(365 / 52)
+            + nonveg*4*7 
+            + veg*4*7;
+        const totalYearlyCarbon = this.electric()*30*12
+            + gas*30*12
+            + carMileage*350
+            + airMileage*365
+            + nonveg*52*7 
+            + veg*52*7;
+
         this.setState({
             carbonDaily: totalDailyCarbon,
             carbonMonthly: totalMonthlyCarbon,
             carbonYearly: totalYearlyCarbon
         });
+    }
+    createDoc(total,type){
+        if(total>0){
+            let headers =new Headers();
+            headers.append("Content-Type", "application/json");
+            var raw = JSON.stringify({
+                "uid":this.user,
+                "total": total,
+                "type": type,
+            });
+            var requestOptions = {
+                method: 'POST',
+                headers: headers,
+                body: raw,
+                redirect: 'follow'
+            };
+            fetch("/api/users/createEmission", requestOptions)
+                .then(response => response.text())
+                .then(result => console.log(result))
+                .catch(error => console.log('error', error));
+        }
     }
 
     render(){
