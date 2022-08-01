@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
-import footpic from './footpriint.ico'
+//import footpic from './footpriint.ico'
 import {app} from '../firebase-auth';
 import {getAuth} from "firebase/auth";
 
@@ -47,8 +47,8 @@ class VehicleForm extends React.Component {
         });
         this.user=auth.currentUser.uid;
         this.calculateCarbon();
-        
     }
+
     electric(){
         let total = (5 * this.state.electric / 30); 
         let type ="energy";
@@ -85,6 +85,7 @@ class VehicleForm extends React.Component {
         this.createDoc(total,type);
         return total;
     }
+
     calculateCarbon() {
         let electric = this.electric();
         let gas =this.gas();
@@ -193,12 +194,14 @@ class VehicleForm extends React.Component {
                     <Card.Body><b>{parseInt(this.state.carbonDaily).toString()}</b> lbs of CO2 per day, <b>{parseInt(this.state.carbonMonthly).toString()}</b> lbs of CO2 per month, and <b>{parseInt(this.state.carbonYearly).toString()}</b> lbs of CO2 per year.</Card.Body>
                 </Card>
 
-                {/* <header1>electric = {(this.state.electric).toString()}</header1>
-                <header1>gas = {(this.state.gas).toString()}</header1>
-                <header1>carMileage = {(this.state.carMileage).toString()}</header1>
-                <header1>airMileage = {(this.state.airMileage).toString()}</header1>
-                <header1>nonveg = {(this.state.nonveg).toString()}</header1>
-                <header1>veg = {(this.state.veg).toString()}</header1> */}
+                {/* 
+                    <header1>electric = {(this.state.electric).toString()}</header1>
+                    <header1>gas = {(this.state.gas).toString()}</header1>
+                    <header1>carMileage = {(this.state.carMileage).toString()}</header1>
+                    <header1>airMileage = {(this.state.airMileage).toString()}</header1>
+                    <header1>nonveg = {(this.state.nonveg).toString()}</header1>
+                    <header1>veg = {(this.state.veg).toString()}</header1> 
+                */}
 
                 {/* <header> Your total carbon footprint is: {parseInt(this.state.carbonDaily).toString()} lbs of CO2 per day, {parseInt(this.state.carbonMonthly).toString()} lbs of CO2 per month, and {parseInt(this.state.carbonYearly).toString()} lbs of CO2 per year.</header> */}
             </div>

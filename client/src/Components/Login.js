@@ -1,7 +1,7 @@
 //import styles
 import React, {useState, useEffect} from 'react';
-import {signInWithPopup, signOut, onAuthStateChanged, signInWithEmailAndPassword} from 'firebase/auth';
-import {auth,app,provider} from '../firebase-auth';
+import {signInWithPopup, signInWithEmailAndPassword} from 'firebase/auth';
+import {auth,provider} from '../firebase-auth';
 import { useNavigate } from 'react-router-dom';
 import {FormContainer} from '../Styles/Form.Style';
 
@@ -14,7 +14,7 @@ const Login=({isAuth,setIsAuth})=> {
     if(isAuth==="true" || isAuth===true){
       navigate("/home");
     }
-  }, [])
+  }, [isAuth,navigate])
   
   
   const googleLogin = async () =>{

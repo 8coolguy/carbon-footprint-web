@@ -47,7 +47,7 @@ router.get('/total', (req,res) => {
         date.setUTCFullYear(date.getUTCFullYear() - 100);
     }
     var obj={}
-    obj['total']=0
+    obj['total']=0;
     docRef.get()
         .then(docSnapshot => {
             if(docSnapshot.exists){
@@ -55,13 +55,14 @@ router.get('/total', (req,res) => {
                     .then(query => {
                         query.forEach(doc => {
                             let curDoc =doc.data();
-                            obj['total']+=curDoc['carbon-emisson'];
+                            let total =curDoc['carbon-emission'];
+                            console.log(curDoc)
+                            obj['total']+=total;
                             if (curDoc["type"]){
                                 if(obj[curDoc["type"]]){
-                                    obj[curDoc["type"]]+=curDoc['carbon-emisson'];
+                                    obj[curDoc["type"]]+=total;
                                 }else{
-                                    obj[curDoc["type"]]=0
-                                    obj[curDoc["type"]]+=curDoc['carbon-emisson']
+                                    obj[curDoc["type"]]=total;
                                 }
                             }
                             
@@ -71,12 +72,11 @@ router.get('/total', (req,res) => {
                     .catch(err=>res.status(401).json({reason:"query error"}));
                 
             }else{
-                throw "err"; 
+                return; 
             }
             
         })
         .catch(err=>res.status(400).json({reason:"user not found"}));
-
 });
 
 /**
@@ -111,29 +111,37 @@ router.post('/createUser',(req,res) =>{
  * @return {JSONObject} object of all the types of C02 usage.
  */
 router.post('/createEmission', (req,res) => {
+    console.log("1");
     var uid  =req.body.uid;
     var type =req.body.type;
     var total=req.body.total;
     if(!uid || !type || !total){
         res.status(404).json({reason:"no uid"});
-        return;
     }
     firestore.doc(`users/${uid}`).onSnapshot(snap =>{
         if(snap.exists){
             snap.ref.collection('carbon-emissions').doc().create({
-                "carbon-emisson":total,
+                "carbon-emission":total,
                 "date":new Date(),
                 "type":type
             })
-                .then((ret)=>res.status(200).json(ret))
+                .then((ret)=>{
+                    res.status(200).json(ret);
+                    //let doc =snap.data();
+                    //snap.ref.update({
+                    //    "carbon-emission":doc["carbon-emission"]+total,
+                    //    "last_update": new Date()
+                    //})
+                    //    .then((ret)=>{
+                    //        res.status(200).json(ret);
+                    //        console.log("4");
+                    //    })
+                    //    .catch((err)=>res.status(400).json(err));
+                })
                 .catch((err)=>res.status(400).json({reason:err}));
         }else{
             res.status(400).json({reason:"User does not exist"});
         }
     })
-    
 });
-
-
-
 module.exports =router;

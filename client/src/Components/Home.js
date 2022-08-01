@@ -1,6 +1,6 @@
 import React, {useEffect,useState} from 'react';
 import {app} from '../firebase-auth';
-import {onAuthStateChanged, signOut, getAuth} from 'firebase/auth';
+import {getAuth,onAuthStateChanged} from 'firebase/auth';
 import { Bar } from 'react-chartjs-2';
 import {useNavigate} from "react-router-dom";
 import {
@@ -13,7 +13,7 @@ import {
     Legend,
   } from 'chart.js';
 
-const auth =getAuth(app);
+
 export const options = {
     responsive: true,
     plugins: {
@@ -29,28 +29,19 @@ export const options = {
 
 
 const Home =({isAuth})=>{
-    const navigate =useNavigate();
-
-    ChartJS.register(
-        CategoryScale,
-        LinearScale,
-        BarElement,
-        Title,
-        Tooltip,
-        Legend
-      );
     const [info, setData] =useState({});
+    const navigate =useNavigate();
+    const [user,setUser]=useState({});
+    ChartJS.register(CategoryScale,LinearScale,BarElement,Title,Tooltip,Legend);
     const apiCall = async (span) => {
-        console.log(auth.currentUser.uid);
-        if(isAuth && auth){
-            let res = await fetch(`/api/users/total?uid=${auth.currentUser.uid}&span=${span}`);
+        console.log(user);
+        if(user){
+            console.log(`/api/users/total?uid=${user.uid}&span=${span}`);
+            let res = await fetch(`/api/users/total?uid=${user.uid}&span=${span}`);
             res.text().then((data) =>{
                 setData(JSON.parse(data));
             });
-
-            
         }
-                
     };
     const lastMonth =()=> {
         apiCall("m");
@@ -66,18 +57,18 @@ const Home =({isAuth})=>{
     }
     
     useEffect(() => {
-        if(isAuth===false){
-            console.log("switch page")
-            navigate("/login");
-        }
-        apiCall('a')
+        const auth =getAuth();
+        onAuthStateChanged(auth, (currentUser) => {
+            if (currentUser) {
+                setUser(currentUser);
+                console.log("Statechange",currentUser);
+            }
+            else{
+                navigate('/login');
+            }
+        });
+        
     }, []);
-
-
-    //for logging purpose only
-    useEffect(() => {
-        console.log("Home",data);
-    }, [info]);
 
     const data=React.useMemo(()=>({
         labels:Object.keys(info),
@@ -86,13 +77,9 @@ const Home =({isAuth})=>{
             data:Object.keys(info).map((key)=> info[key]),
         }]
     }),[info]);
-
-    
-    //
-
     return(
         <div>
-            <h1>Home Page</h1>
+            <h1>{user.displayName}</h1>
             <button onClick={lastWeek}>Last Week</button>
             <button onClick={lastMonth}>Last Month</button>
             <button onClick={lastYear}>Last Year</button>
@@ -100,7 +87,5 @@ const Home =({isAuth})=>{
             <Bar options={options} data={data}></Bar>
         </div>
     );
-    
-
 }
 export default Home;
