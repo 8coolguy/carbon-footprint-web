@@ -4,8 +4,8 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
 //import footpic from './footpriint.ico'
-import {app} from '../firebase-auth';
-import {getAuth} from "firebase/auth";
+import {app,auth} from '../firebase-auth';
+
 
 class VehicleForm extends React.Component {
     constructor() {
@@ -14,8 +14,10 @@ class VehicleForm extends React.Component {
         
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.user="";
+        
+        
         this.state = {
+                      user:{},
                       electric: '',
                       gas: '',
                       carMileage: '',
@@ -26,6 +28,24 @@ class VehicleForm extends React.Component {
                       carbonDaily: 0,
                       carbonMonthly: 0,
                       carbonYearly: 0};
+    }
+    componentDidMount(){
+        auth.onAuthStateChanged((currentUser)=>{
+            this.setState({
+                user:currentUser||{}
+            },()=>{
+                    
+                    this.getLastEntry('electric');
+                    this.getLastEntry('gas');
+                    this.getLastEntry('carMileage');
+                    this.getLastEntry('airMileage');
+                    this.getLastEntry('nonveg');
+                    this.getLastEntry('veg');
+                })
+                
+            
+            
+        })
     }
 
     handleChange(event) {
@@ -40,52 +60,52 @@ class VehicleForm extends React.Component {
     }
     
     handleSubmit(event) {
-        const auth =getAuth(app);
+        
+        
         event.preventDefault();
         this.setState({
             submitted: true
         });
-        this.user=auth.currentUser.uid;
+        
         this.calculateCarbon();
     }
 
     electric(){
         let total = (5 * this.state.electric / 30); 
         let type ="energy";
-        this.createDoc(total,type);
+        this.createDoc(total,type,"electric");
         return total;
     }
     gas(){
         let total =(10 * this.state.gas / 30);
         let type  ="energy";
-        this.createDoc(total,type);
+        this.createDoc(total,type,"gas");
         return total;
     }
     carMileage(){
         let total = (0.8 * this.state.carMileage);
         let type = "transportation";
-        this.createDoc(total,type);
+        this.createDoc(total,type,"carMileage");
         return total;
     }
     airMileage(){
         let total =(0.43 * this.state.airMileage / 365);
         let type ="transportation";
-        this.createDoc(total,type);
+        this.createDoc(total,type,"airMileage");
         return total;
     }
     nonveg(){
         let total=(1.5 * this.state.nonveg / 7);
         let type ="food";
-        this.createDoc(total,type);
+        this.createDoc(total,type,"nonveg");
         return total;
     }
     veg(){
         let total= (0.3 * this.state.veg / 7);
         let type="food";
-        this.createDoc(total,type);
+        this.createDoc(total,type,"veg");
         return total;
     }
-
     calculateCarbon() {
         let electric = this.electric();
         let gas =this.gas();
@@ -99,13 +119,13 @@ class VehicleForm extends React.Component {
              + airMileage
              + nonveg
              + veg;
-        const totalMonthlyCarbon = this.electric()*30
+        const totalMonthlyCarbon = electric*30
             + gas*30
             + carMileage*30
             + airMileage*(365 / 52)
             + nonveg*4*7 
             + veg*4*7;
-        const totalYearlyCarbon = this.electric()*30*12
+        const totalYearlyCarbon = electric*30*12
             + gas*30*12
             + carMileage*350
             + airMileage*365
@@ -118,14 +138,15 @@ class VehicleForm extends React.Component {
             carbonYearly: totalYearlyCarbon
         });
     }
-    createDoc(total,type){
+    createDoc(total,type,cat){
         if(total>0){
             let headers =new Headers();
             headers.append("Content-Type", "application/json");
             var raw = JSON.stringify({
-                "uid":this.user,
+                "uid":this.state.user.uid,
                 "total": total,
                 "type": type,
+                "category":cat,
             });
             var requestOptions = {
                 method: 'POST',
@@ -138,6 +159,16 @@ class VehicleForm extends React.Component {
                 .then(result => console.log(result))
                 .catch(error => console.log('error', error));
         }
+    }
+    async getLastEntry(cat){
+        
+        let res = await fetch(`/api/users/lastupdatecat?uid=${this.state.user.uid}&category=${cat}`);
+            res.text()
+                .then(data=> {
+                    this.setState({[cat]:data});
+                })
+            return ''
+            
     }
 
     render(){

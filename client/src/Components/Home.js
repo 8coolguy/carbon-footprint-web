@@ -1,8 +1,10 @@
 import React, {useEffect,useState} from 'react';
 import {app} from '../firebase-auth';
 import {getAuth,onAuthStateChanged} from 'firebase/auth';
-import { Bar } from 'react-chartjs-2';
+import {Timestamp} from 'firebase/firestore';
+import {Pie,Line} from 'react-chartjs-2';
 import {useNavigate} from "react-router-dom";
+import 'chartjs-adapter-moment';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -11,6 +13,10 @@ import {
     Title,
     Tooltip,
     Legend,
+    ArcElement,
+    PointElement,
+    registerables,
+    
   } from 'chart.js';
 
 
@@ -26,24 +32,45 @@ export const options = {
         },
     },
   };
+export const line_options= {
+    scales: {
+        x: {
+            type: 'time'
+        }
+    }
+}
 
 
 const Home =({isAuth})=>{
     const [info, setData] =useState({});
     const navigate =useNavigate();
     const [user,setUser]=useState({});
-    ChartJS.register(CategoryScale,LinearScale,BarElement,Title,Tooltip,Legend);
+    const [total,setTotal]=useState("");
+    const [labels,setLabels]=useState([]);
+    const [docs,setDocs]=useState({});
+
+    ChartJS.register(...registerables);
+    
     const apiCall = async (span) => {
         console.log(user);
         if(user){
             console.log(`/api/users/total?uid=${user.uid}&span=${span}`);
             let res = await fetch(`/api/users/total?uid=${user.uid}&span=${span}`);
             res.text().then((data) =>{
-                setData(JSON.parse(data));
+                let obj =JSON.parse(data);
+                let t = obj.total;
+                setTotal(t);
+                delete obj.total;
+                setData(obj);
             });
+            res = await fetch(`/api/users/all?uid=${user.uid}&span=${span}`);
+            res.text().then((data)=>{
+                setDocs(JSON.parse(data));
+            })
         }
     };
     const lastMonth =()=> {
+        console.log(line_data);
         apiCall("m");
     }
     const lastYear =()=> {
@@ -70,21 +97,51 @@ const Home =({isAuth})=>{
         
     }, []);
 
-    const data=React.useMemo(()=>({
+    const pie_data=React.useMemo(()=>({
         labels:Object.keys(info),
         datasets: [{
-            label: "C02 Emisson",
+            label: "C02 Emission",
             data:Object.keys(info).map((key)=> info[key]),
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+            ],
         }]
     }),[info]);
+    const line_data=React.useMemo(()=>({
+        type:'line',
+        datasets: Object.keys(docs).map((key)=>{
+            return {
+                "label":key,
+                "fill":false,
+                "data":Object.keys(docs[key]).map((doc)=>{
+                    return {
+                        "x":new Timestamp(docs[key][doc]["date"]["_seconds"],docs[key][doc]["date"]["_nanoseconds"]).toDate().toString(), 
+                        "y":docs[key][doc]['carbon-emission']
+                    }
+                })
+
+            }
+            
+        
+        
+        })
+        
+        
+    }),[docs]);
+    
     return(
         <div>
-            <h1>{user.displayName}</h1>
+            <h1>Total CO2 Emissions</h1>
+            <h2>{total} pounds of emissions</h2>
             <button onClick={lastWeek}>Last Week</button>
             <button onClick={lastMonth}>Last Month</button>
             <button onClick={lastYear}>Last Year</button>
             <button onClick={allTime}> All Data </button>
-            <Bar options={options} data={data}></Bar>
+            <Pie options={options} data={pie_data}></Pie>
+            <Line options={line_options} data={line_data}></Line>
+            
         </div>
     );
 }
