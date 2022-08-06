@@ -96,17 +96,17 @@ const Home =({isAuth})=>{
         });
         
     }, []);
-
+    const colors ={
+        transportation:'rgba(255, 99, 132, 0.2)',
+        food:'rgba(54, 162, 235, 0.2)',
+        energy:'rgba(255, 206, 86, 0.2)',
+    }
     const pie_data=React.useMemo(()=>({
         labels:Object.keys(info),
         datasets: [{
             label: "C02 Emission",
             data:Object.keys(info).map((key)=> info[key]),
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-            ],
+            backgroundColor: Object.keys(info).map(key=>colors[key])
         }]
     }),[info]);
     const line_data=React.useMemo(()=>({
@@ -115,6 +115,7 @@ const Home =({isAuth})=>{
             return {
                 "label":key,
                 "fill":false,
+                "borderColor":colors[key],
                 "data":Object.keys(docs[key]).map((doc)=>{
                     return {
                         "x":new Timestamp(docs[key][doc]["date"]["_seconds"],docs[key][doc]["date"]["_nanoseconds"]).toDate().toString(), 
