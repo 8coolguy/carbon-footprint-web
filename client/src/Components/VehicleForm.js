@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
 //import footpic from './footpriint.ico'
-import {app,auth} from '../firebase-auth';
+import {auth} from '../firebase-auth';
 
 
 class VehicleForm extends React.Component {

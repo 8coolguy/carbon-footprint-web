@@ -7,14 +7,6 @@ import {useNavigate} from "react-router-dom";
 import 'chartjs-adapter-moment';
 import {
     Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-    ArcElement,
-    PointElement,
     registerables,
     
   } from 'chart.js';

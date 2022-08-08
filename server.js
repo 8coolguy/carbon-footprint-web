@@ -19,10 +19,11 @@ app.use(morgan('dev'));
 //set up routes
 app.use('/api/users',users);
 
+app.use(express.static(path.join(__dirname+'/client/', 'build')));
 //for deployment
-//app.get('/*', function (req, res) {
-//    res.sendFile(path.join(__dirname+'/client/', 'build', 'index.html'));
-//});
+app.get('/*', function (req, res) {
+    res.sendFile(path.join(__dirname+'/client/', 'build', 'index.html'));
+});
 
 //sert up the port number 
 const port = process.env.PORT || 8000;

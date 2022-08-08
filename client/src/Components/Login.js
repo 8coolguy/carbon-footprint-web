@@ -22,6 +22,23 @@ const Login=({isAuth,setIsAuth})=> {
     await signInWithPopup(auth, provider)
         .then((result) => {
           console.log("Logged In");
+          const uid =result.user.uid;
+          let headers =new Headers();
+          headers.append("Content-Type", "application/json");
+
+          var raw = JSON.stringify({
+            "uid":uid,
+            });
+            var requestOptions = {
+                method: 'POST',
+                headers: headers,
+                body: raw,
+                redirect: 'follow'
+            };
+            fetch("/api/users/createUser", requestOptions)
+                .then(response => response.text())
+                .then(result => console.log(result))
+                .catch(error => console.log('error', error));
           localStorage.setItem("isAuth", true);
           setIsAuth(true);
           navigate("/home");
@@ -37,6 +54,23 @@ const Login=({isAuth,setIsAuth})=> {
     await signInWithEmailAndPassword(auth, email, password)
       .then((res)=>{
         console.log("Logged In");
+        const uid =res.user.uid;
+        let headers =new Headers();
+        headers.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+          "uid":uid,
+          });
+          var requestOptions = {
+              method: 'POST',
+              headers: headers,
+              body: raw,
+              redirect: 'follow'
+          };
+          fetch("/api/users/createUser", requestOptions)
+              .then(response => response.text())
+              .then(result => console.log(result))
+              .catch(error => console.log('error', error));
         localStorage.setItem("isAuth", true);
         setIsAuth(true);
         navigate("/home");

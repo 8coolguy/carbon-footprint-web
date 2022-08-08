@@ -14,27 +14,55 @@ const Signup =()=>{
         const provider = new GoogleAuthProvider();
         provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
         signInWithPopup(auth, provider)
-            .then((result) => {
-                /*
-                // This gives you a Google Access Token. You can use it to access the Google API.
-                const credential = GoogleAuthProvider.credentialFromResult(result);
-                const token = credential.accessToken;
-                // The signed-in user info.
-                const user = result.user;
-                // ...
-                */
+            .then(async(result) => {
+               const uid =result.user.uid;
+
+               let headers =new Headers();
+               headers.append("Content-Type", "application/json");
+
+               var raw = JSON.stringify({
+                "uid":uid,
+                });
+                var requestOptions = {
+                    method: 'POST',
+                    headers: headers,
+                    body: raw,
+                    redirect: 'follow'
+                };
+                await fetch("/api/users/createUser", requestOptions)
+                    .then(response => response.text())
+                    .then(result => console.log(result))
+                    .catch(error => console.log('error', error));
+
+
             }).catch((error) => {
                 // Handle Errors here.
                 console.log("Signup", error);
                 // ...
             });
     }
-    const register = async (event) =>{
+    const register = (event) =>{
         event.preventDefault();
         if(password === verify){
-            await createUserWithEmailAndPassword(auth, email, password)
+            createUserWithEmailAndPassword(auth, email, password)
                 .then((res) =>{
-                    console.log("Signup", res);
+                    const uid =res.user.uid;
+                    let headers =new Headers();
+                    headers.append("Content-Type", "application/json");
+     
+                    var raw = JSON.stringify({
+                     "uid":uid,
+                     });
+                     var requestOptions = {
+                         method: 'POST',
+                         headers: headers,
+                         body: raw,
+                         redirect: 'follow'
+                     };
+                     fetch("/api/users/createUser", requestOptions)
+                         .then(response => response.text())
+                         .then(result => console.log(result))
+                         .catch(error => console.log('error', error));
                 })
                 .catch((err)=>{
                     console.error("Signup", err);

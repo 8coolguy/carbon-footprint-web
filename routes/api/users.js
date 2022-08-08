@@ -187,10 +187,10 @@ router.post('/createUser',(req,res) =>{
     }
     let newUser = firestore.collection('users').doc(uid);
     newUser.create({
-        "last-update":new Date()
+        "last_update":new Date()
     })
         .then((ret)=>res.status(200).json(ret))
-        .catch((err)=>res.status(400).json({reason:err}));
+        .catch((err)=>res.status(200).json({reason:err}));
 
 });
 /**
