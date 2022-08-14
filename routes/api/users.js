@@ -172,6 +172,23 @@ router.get('/lastupdatecat',(req,res)=>{
 
 });
 
+router.get('/lastupdated',(req,res)=>{
+    const uid =req.query.uid;
+
+    let docRef = firestore.doc(`users/${uid}`);
+    docRef.get()
+        .then((snap)=>{
+            if(snap.exists){
+                res.status(200).json(snap.data()["last_update"])
+            }else{
+                res.status(400).json({"user":"not found"});
+            }
+
+        })
+
+
+});
+
 /**
  * POST USER createuser
  * creates new user in the database

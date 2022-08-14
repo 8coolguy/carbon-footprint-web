@@ -1,4 +1,5 @@
 import React, {useEffect,useState} from 'react';
+import {HomeContainer} from '../Styles/Home.Style';
 import {app} from '../firebase-auth';
 import {getAuth,onAuthStateChanged} from 'firebase/auth';
 import {Timestamp} from 'firebase/firestore';
@@ -38,8 +39,8 @@ const Home =({isAuth})=>{
     const navigate =useNavigate();
     const [user,setUser]=useState({});
     const [total,setTotal]=useState("");
-    const [labels,setLabels]=useState([]);
     const [docs,setDocs]=useState({});
+    const [lastupdate,setLastupdate] =useState("");
 
     ChartJS.register(...registerables);
     
@@ -59,10 +60,14 @@ const Home =({isAuth})=>{
             res.text().then((data)=>{
                 setDocs(JSON.parse(data));
             })
+            res =await fetch(`api/users/lastupdated?uid=${user.uid}`);
+            res.text().then((data)=>{
+                let time =JSON.parse(data);
+                setLastupdate(new Timestamp(time["_seconds"],time["_nanoseconds"]).toDate().toString());
+            })
         }
     };
     const lastMonth =()=> {
-        console.log(line_data);
         apiCall("m");
     }
     const lastYear =()=> {
@@ -74,6 +79,7 @@ const Home =({isAuth})=>{
     const allTime =() => {
         apiCall('a');
     }
+    
     
     useEffect(() => {
         const auth =getAuth();
@@ -110,7 +116,7 @@ const Home =({isAuth})=>{
                 "borderColor":colors[key],
                 "data":Object.keys(docs[key]).map((doc)=>{
                     return {
-                        "x":new Timestamp(docs[key][doc]["date"]["_seconds"],docs[key][doc]["date"]["_nanoseconds"]).toDate().toString(), 
+                        "x":new Timestamp(docs[key][doc]["date"]["_seconds"],docs[key][doc]["date"]["_nanoseconds"]).toDate().toUTCString(), 
                         "y":docs[key][doc]['carbon-emission']
                     }
                 })
@@ -125,9 +131,10 @@ const Home =({isAuth})=>{
     }),[docs]);
     
     return(
-        <div>
+        <HomeContainer>
             <h1>Total CO2 Emissions</h1>
             <h2>{total} pounds of emissions</h2>
+            <h3>Last Updated: {lastupdate}</h3>
             <button onClick={lastWeek}>Last Week</button>
             <button onClick={lastMonth}>Last Month</button>
             <button onClick={lastYear}>Last Year</button>
@@ -135,7 +142,7 @@ const Home =({isAuth})=>{
             <Pie options={options} data={pie_data}></Pie>
             <Line options={line_options} data={line_data}></Line>
             
-        </div>
+        </HomeContainer>
     );
 }
 export default Home;

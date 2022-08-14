@@ -10,10 +10,10 @@ const Signup =()=>{
     const [password,setPassword]=useState("");
     const [verify,setVerify]=useState("");
     
-    const googleSignUp =() =>{
+    const googleSignUp =async () =>{
         const provider = new GoogleAuthProvider();
         provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-        signInWithPopup(auth, provider)
+        await signInWithPopup(auth, provider)
             .then(async(result) => {
                const uid =result.user.uid;
 
@@ -41,11 +41,11 @@ const Signup =()=>{
                 // ...
             });
     }
-    const register = (event) =>{
+    const register =async (event) =>{
         event.preventDefault();
         if(password === verify){
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((res) =>{
+            await createUserWithEmailAndPassword(auth, email, password)
+                .then(async(res) =>{
                     const uid =res.user.uid;
                     let headers =new Headers();
                     headers.append("Content-Type", "application/json");
@@ -59,7 +59,7 @@ const Signup =()=>{
                          body: raw,
                          redirect: 'follow'
                      };
-                     fetch("/api/users/createUser", requestOptions)
+                    await fetch("/api/users/createUser", requestOptions)
                          .then(response => response.text())
                          .then(result => console.log(result))
                          .catch(error => console.log('error', error));
