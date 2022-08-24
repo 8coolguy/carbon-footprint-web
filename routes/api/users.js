@@ -1,11 +1,20 @@
 const express =require('express');
 const app =require('../../firebase')
 const firebase =require('firebase-admin');
-const {getFirestore} =require('firebase-admin/firestore');
+const {getFirestore,Timestamp} =require('firebase-admin/firestore');
 const router =express.Router();
+const MoDaYeDate = require("../../CustomObjects/MonthDayYearDate")
 
 const firestore = getFirestore(app);
-
+const groups =["energy","transportation","food"]
+const categories={
+    "veg":"food",
+    "nonveg":"food",
+    "electric":"energy",
+    "gas":"energy",
+    "carMileage":"transportation",
+    "airMileage":"transportation",
+}
 router.get("/",(req,res)=>{
     res.status(200).json({urls:
         {
@@ -34,7 +43,6 @@ router.get('/total', (req,res) => {
         return;
     }
     let docRef = firestore.doc(`users/${uid}`);
-    var total =0;
     let date = new Date()
     if(span ==="m"){
         date.setMonth(date.getMonth() - 1);
@@ -52,10 +60,14 @@ router.get('/total', (req,res) => {
     docRef.get()
         .then(docSnapshot => {
             if(docSnapshot.exists){
-                docSnapshot.ref.collection('carbon-emissions').where('date', '>', date).get()
+                docSnapshot.ref.collection('carbon-emissions').where('date', '>', date).orderBy('date').get()
                     .then(query => {
                         query.forEach(doc => {
                             let curDoc =doc.data();
+                            let d = curDoc['date'];
+                            
+                            //console.log(MoDaYeDate.of(d["_seconds"],d["_nanoseconds"]).toDate());
+                            
                             let total =curDoc['carbon-emission'];
                             obj['total']+=total;
                             if (curDoc["type"]){
@@ -70,6 +82,116 @@ router.get('/total', (req,res) => {
                         res.status(200).json(obj);
                     })
                     .catch(err=>res.status(401).json({reason:"query error"}));
+                
+            }else{
+                return; 
+            }
+            
+        })
+        .catch(err=>res.status(400).json({reason:"user not found"}));
+});
+/**
+ * GET USER totals if there is not document for the day add the last document
+ * 
+ * 
+ * Returns total C02 usage within a span .
+ * ex:
+ * {
+ *  total:x
+ *  cat1:y
+ *  cat2:z
+ *  [labels day1 to current]
+ *  [total day1 to current]
+ *  [cat1 day1 to current]
+ *  [cat2 day1 to current]
+ *
+ * }
+ *
+ * @param {str} span last month,last year, last week,all time.
+ * @param {str}  uid which user to get.
+ * @return {JSONObject} object of all the types of C02 usage.
+ */
+router.get('/totaler', (req,res) => {
+    
+    var uid, span;
+    uid = req.query.uid
+    span = req.query.span
+    if(!uid || !span){
+        res.status(400).json({succes:false,reason:"no parameters"});
+        return;
+    }
+    let docRef = firestore.doc(`users/${uid}`);
+    let date =new Date()
+    if(span ==="m"){
+        date.setMonth(date.getMonth() - 1);
+    }
+    else if(span==="w"){    
+        date.setDate(date.getDate() - 7);
+    }
+    else if(span === "y"){
+        date.setUTCFullYear(date.getUTCFullYear() - 1);
+    }else if(span==="a"){
+        date.setUTCFullYear(date.getUTCFullYear() - 100);
+    }
+    var obj={}
+    obj['total']=0;
+    obj["total-date"]=[];
+    obj.labels=[];
+    groups.forEach((key)=>{
+        obj[key]=0
+        obj[key+"-date"]=[];
+    });
+    docRef.get()
+        .then(docSnapshot => {
+            if(docSnapshot.exists){
+                docSnapshot.ref.collection('carbon-emissions').where('date', '>', date).orderBy('date').get()
+                    .then(query => {
+                        let n = query.docs.length;
+                        
+                        let docs =query.docs;
+                        let i = 0;
+                        while(i < n){
+                            
+                            let cur_d=MoDaYeDate.of(docs[i].data()['date']["_seconds"],docs[i].data()['date']["_nanoseconds"]).toDate();
+                            let next_d;
+                            if(i==n-1){
+                                next_d=new Date(cur_d);
+                                next_d.setDate(next_d.getDate() + 1)
+                            }else{
+                                next_d=MoDaYeDate.of(docs[i+1].data()['date']["_seconds"],docs[i+1].data()['date']["_nanoseconds"]).toDate();
+                            }
+                            
+                            for (var d = cur_d; d <next_d; d.setDate(d.getDate() + 1)) {
+                                
+                                obj.labels.push(new MoDaYeDate(d).toString());
+                                
+                                let doc = docs[i].data();
+                                let cur_t=0
+                                let cur_cat={}
+                                groups.forEach((key)=>cur_cat[key]=0);
+
+                                Object.keys(categories).forEach((key)=>{
+                                    cur_cat[categories[key]]+=doc[key]
+                                    cur_t+=doc[key]
+                                    console.log(doc[key])
+                                })
+                                console.log(cur_t)
+                                
+                                obj.total+=cur_t;
+                                obj["total-date"].push(cur_t)
+                                groups.forEach((key)=>{
+                                    obj[key]+=cur_cat[key]
+                                    obj[key+"-date"].push(cur_cat[key])
+                                });
+                            }
+                            i+=1
+                        }
+                        
+
+
+                        res.status(200).json(obj);
+                    })
+                    .catch(err=>res.status(401).json({reason:"query error","obj":obj}));
                 
             }else{
                 return; 
@@ -171,6 +293,31 @@ router.get('/lastupdatecat',(req,res)=>{
         })
 
 });
+router.get('/lastdoc',(req,res)=>{
+    
+    const uid=req.query.uid;
+
+    let docRef = firestore.doc(`users/${uid}`);
+    docRef.get()
+        .then((snap)=>{
+            if(snap.exists){
+                docRef.collection("carbon-emissions").orderBy('date',"desc").limit(1).get().then(query =>{
+                    if(query.empty){
+                        res.status(200).json({});
+                    }else{
+                        query.forEach(doc => {
+                            res.status(200).json(doc.data())
+                            return;
+                        });
+                    }
+                })
+            }else{
+                res.status(400).json({"user":"not found"});
+            }
+
+        })
+
+});
 
 router.get('/lastupdated',(req,res)=>{
     const uid =req.query.uid;
@@ -254,6 +401,63 @@ router.post('/createEmission', (req,res) => {
     })
 });
 
+/**
+ * POST USER createuser
+ * creates new user in the database
+ *
+ * @param {str}  uid which user to get.
+ * @param {Object} data of all the types of categories
+ * @return {JSONObject} object of all the types of C02 usage.
+ */
+router.post('/createdoc',(req,res)=>{
+    var uid = req.body.uid;
+    var data =req.body.data;
+    if(!uid || !data){
+        res.status(404).json({reason:"missing info to post"});
+    }
+    let userDoc =firestore.collection('users').doc(uid);
+    userDoc.get().then((snap)=>{
+        if(snap.exists){
+            let last_update =snap.data()["last_update"]
+            //create new doc for the day in data'
+            last_update =MoDaYeDate.of(last_update["_seconds"],last_update["_nanoseconds"])
+            let currentDate=new MoDaYeDate(Timestamp.now().toDate())
+            console.log(currentDate.toDate());
+            
+            if (currentDate.equals(last_update)){//doc created today already just needs to upodate it
+                snap.ref.collection('carbon-emissions').where("date","==",currentDate.toDate()).limit(1).get()
+                    .then(query=>{
+                        if(query._size > 0){
+                            query.forEach((doc=>{
+                                console.log(doc.data());
+                                doc.ref.update(data)
+                                    .then((ret)=>res.status(200).json(ret))
+                                    .catch((err)=>res.status(400).json(err))
+                            }))
+                        }else{//no document in query occurs only on new account creation ]
+                            
+                             
+                            data["date"]=currentDate.toDate();
+                            snap.ref.collection('carbon-emissions').doc().create(data)
+                                .then(()=>userDoc.update({last_update:data["date"]}))
+                                .then((ret)=>res.status(200).json(ret))
+                                .catch((err)=>res.status(400).json(err));
+                        }
+                    })
+                
+            }else{
+                data["date"]=currentDate.toDate();
+                snap.ref.collection('carbon-emissions').doc().create(data)
+                    .then(()=>userDoc.update({last_update:data["date"]}))
+                    .then((ret)=>res.status(200).json(ret))
+                    .catch((err)=>res.status(400).json(err));
+            }
+        }else{
+            res.status(400).json({"reason":"uid does not exist"})
+        }
+    })
+
+})
 
 
 module.exports =router;

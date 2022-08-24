@@ -21,7 +21,7 @@ export const options = {
         },
         title: {
             display: true,
-            text: 'Carbon  Footprint',
+            text: 'Daily Carbon Footprint Distrubution',
         },
     },
   };
@@ -95,9 +95,9 @@ const Home =({isAuth})=>{
         
     }, []);
     const colors ={
-        transportation:'rgba(255, 99, 132, 0.2)',
-        food:'rgba(54, 162, 235, 0.2)',
-        energy:'rgba(255, 206, 86, 0.2)',
+        transportation:'rgba(255, 99, 132, 0.5)',
+        food:'rgba(54, 162, 235, 0.5)',
+        energy:'rgba(255, 206, 86, 0.5)',
     }
     const pie_data=React.useMemo(()=>({
         labels:Object.keys(info),
@@ -126,8 +126,6 @@ const Home =({isAuth})=>{
         
         
         })
-        
-        
     }),[docs]);
     
     return(

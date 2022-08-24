@@ -14,10 +14,11 @@ class VehicleForm extends React.Component {
         
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        
+        this.categories =["electric","gas","carMileage","airMileage","nonveg","veg"]
         
         this.state = {
                       user:{},
+                      data:{},
                       electric: '',
                       gas: '',
                       carMileage: '',
@@ -35,12 +36,7 @@ class VehicleForm extends React.Component {
                 user:currentUser||{}
             },()=>{
                     
-                    this.getLastEntry('electric');
-                    this.getLastEntry('gas');
-                    this.getLastEntry('carMileage');
-                    this.getLastEntry('airMileage');
-                    this.getLastEntry('nonveg');
-                    this.getLastEntry('veg');
+                    this.getLastEntry();
                 })
                 
             
@@ -66,45 +62,54 @@ class VehicleForm extends React.Component {
         this.setState({
             submitted: true
         });
-        
         this.calculateCarbon();
     }
 
     electric(){
         let total = (5 * this.state.electric / 30); 
-        let type ="energy";
-        this.createDoc(total,type,"electric");
+        this.updateDataState("electric",total);
         return total;
+        
     }
     gas(){
         let total =(10 * this.state.gas / 30);
-        let type  ="energy";
-        this.createDoc(total,type,"gas");
+        this.updateDataState("gas",total);
         return total;
+        
     }
     carMileage(){
         let total = (0.8 * this.state.carMileage);
-        let type = "transportation";
-        this.createDoc(total,type,"carMileage");
+        this.updateDataState("carMileage",total);
         return total;
+        
     }
     airMileage(){
         let total =(0.43 * this.state.airMileage / 365);
-        let type ="transportation";
-        this.createDoc(total,type,"airMileage");
+        this.updateDataState("airMileage",total);
         return total;
+        
     }
     nonveg(){
         let total=(1.5 * this.state.nonveg / 7);
-        let type ="food";
-        this.createDoc(total,type,"nonveg");
+        this.updateDataState("nonveg",total);
         return total;
+        
     }
     veg(){
         let total= (0.3 * this.state.veg / 7);
-        let type="food";
-        this.createDoc(total,type,"veg");
+        this.updateDataState("veg",total);
         return total;
+        
+    }
+    updateDataState(cat,total){
+        let input =cat+"-input";
+        this.setState(prevState => ({
+            data: {                   // object that we want to update
+                ...prevState.data,    // keep all other key-value pairs
+                [cat]: total,
+                [input]:this.state[cat]      // update the value of specific key
+            }
+        }),()=>{this.createDoc()})
     }
     calculateCarbon() {
         let electric = this.electric();
@@ -113,6 +118,9 @@ class VehicleForm extends React.Component {
         let airMileage=this.airMileage();
         let nonveg =this.nonveg();
         let  veg =this.veg();
+        console.log(this.state);
+        this.createDoc();
+
         const totalDailyCarbon = electric
              + gas
              + carMileage
@@ -138,37 +146,39 @@ class VehicleForm extends React.Component {
             carbonYearly: totalYearlyCarbon
         });
     }
-    createDoc(total,type,cat){
-        if(total>0){
-            let headers =new Headers();
-            headers.append("Content-Type", "application/json");
-            var raw = JSON.stringify({
-                "uid":this.state.user.uid,
-                "total": total,
-                "type": type,
-                "category":cat,
-            });
-            var requestOptions = {
-                method: 'POST',
-                headers: headers,
-                body: raw,
-                redirect: 'follow'
-            };
-            fetch("/api/users/createEmission", requestOptions)
-                .then(response => response.text())
-                .then(result => console.log(result))
-                .catch(error => console.log('error', error));
-        }
-    }
-    async getLastEntry(cat){
+    createDoc(){
+            console.log("Update",this.state.data);
+            console.log("Update",this.state.user);
+            if(Object.keys(this.state.data).length ===12){
+                let headers =new Headers();
+                headers.append("Content-Type", "application/json");
+                var raw = JSON.stringify({
+                    "uid":this.state.user.uid,
+                    "data":this.state.data
+                });
+                var requestOptions = {
+                    method: 'POST',
+                    headers: headers,
+                    body: raw,
+                    redirect: 'follow'
+                };
+                fetch("/api/users/createdoc", requestOptions)
+                    .then(response => response.text())
+                    .then(result => console.log(result))
+                    .catch(error => console.log('error', error));
+            }
         
-        let res = await fetch(`/api/users/lastupdatecat?uid=${this.state.user.uid}&category=${cat}`);
-            res.text()
+    }
+    async getLastEntry(){
+        let res = await fetch(`/api/users/lastdoc?uid=${this.state.user.uid}`);
+            res.json()
                 .then(data=> {
-                    this.setState({[cat]:data});
+                    this.categories.forEach((key)=>{
+                        let datakey = key+"-input";
+                        this.setState({[key]:data[datakey]},()=>console.log(this.state));
+                    })
                 })
-            return ''
-            
+            return;
     }
 
     render(){

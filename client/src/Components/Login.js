@@ -20,7 +20,7 @@ const Login=({isAuth,setIsAuth})=> {
   const googleLogin = async () =>{
     provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
     await signInWithPopup(auth, provider)
-        .then((result) => {
+        .then(async (result) => {
           console.log("Logged In");
           const uid =result.user.uid;
           let headers =new Headers();
@@ -35,13 +35,16 @@ const Login=({isAuth,setIsAuth})=> {
                 body: raw,
                 redirect: 'follow'
             };
-            fetch("/api/users/createUser", requestOptions)
+            await fetch("/api/users/createUser", requestOptions)
                 .then(response => response.text())
-                .then(result => console.log(result))
+                .then(result =>{
+                  console.log(result)
+                  localStorage.setItem("isAuth", true);
+                  setIsAuth(true);
+                  navigate("/home");
+                })
                 .catch(error => console.log('error', error));
-          localStorage.setItem("isAuth", true);
-          setIsAuth(true);
-          navigate("/home");
+            
         }).catch((error) => {
             // Handle Errors here.
             alert(error)
@@ -52,7 +55,7 @@ const Login=({isAuth,setIsAuth})=> {
   const login = async (event)=>{
     event.preventDefault();
     await signInWithEmailAndPassword(auth, email, password)
-      .then((res)=>{
+      .then(async (res)=>{
         console.log("Logged In");
         const uid =res.user.uid;
         let headers =new Headers();
@@ -67,13 +70,16 @@ const Login=({isAuth,setIsAuth})=> {
               body: raw,
               redirect: 'follow'
           };
-          fetch("/api/users/createUser", requestOptions)
+          await fetch("/api/users/createUser", requestOptions)
               .then(response => response.text())
-              .then(result => console.log(result))
+              .then(result =>{
+                console.log(result);
+                localStorage.setItem("isAuth", true);
+                setIsAuth(true);
+                navigate("/home");
+              })
               .catch(error => console.log('error', error));
-        localStorage.setItem("isAuth", true);
-        setIsAuth(true);
-        navigate("/home");
+        
       })
       .catch((err)=>alert(err));
   }
@@ -81,7 +87,7 @@ const Login=({isAuth,setIsAuth})=> {
     <FormContainer>
       
       <form onSubmit={login}>
-        <button class ="submit" onClick={googleLogin}>Login with Google</button>
+        
         <label>Email</label>
         <input value={email} onChange={(event) =>{setEmail(event.target.value);}}></input>
         <label>Password</label>
@@ -89,6 +95,7 @@ const Login=({isAuth,setIsAuth})=> {
         <button type="submit">Login</button>
 
       </form>
+      <button type="button" class="login-with-google-btn"  onClick={googleLogin}>Login with Google</button>
     </FormContainer>
   )
 }

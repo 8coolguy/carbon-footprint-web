@@ -1,7 +1,7 @@
 import './App.css';
 import Login from './Components/Login';
 import Signup from './Components/Signup';
-import Home from './Components/Home';
+import Home from './Components/new_Home';
 import Navbar from './Components/Navbar';
 import VehicleForm from "./Components/VehicleForm";
 import React,{useState} from 'react';
@@ -14,7 +14,7 @@ function App() {
     <Navbar isAuth={isAuth} setIsAuth={setIsAuth}/>
     <Routes>
       <Route path="/login" element={<Login isAuth={isAuth} setIsAuth={setIsAuth}/>}></Route>
-      <Route path="/signup" element={<Signup/>}></Route>
+      <Route path="/signup" element={<Signup isAuth={isAuth} setIsAuth={setIsAuth}/>}></Route>
       <Route path="/home" element={<Home isAuth={isAuth}/>}></Route>
       <Route path="/update" element={<VehicleForm isAuth={isAuth}/>}></Route>
     </Routes>

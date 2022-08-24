@@ -1,20 +1,28 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import {GoogleAuthProvider,signInWithPopup,createUserWithEmailAndPassword} from 'firebase/auth';
 import {auth} from '../firebase-auth';
-import {FormContainer} from '../Styles/Form.Style';
+import {useNavigate} from 'react-router-dom';
+import {FormContainer,GoogleButton} from '../Styles/Form.Style';
 
 
 
-const Signup =()=>{
+const Signup =({isAuth,setIsAuth})=>{
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
     const [verify,setVerify]=useState("");
+    const navigate =useNavigate("");
+
+    useEffect(() => {
+        if(isAuth==="true" || isAuth===true){
+            navigate("/home");
+          }
+    }, [isAuth])
     
     const googleSignUp =async () =>{
         const provider = new GoogleAuthProvider();
         provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
         await signInWithPopup(auth, provider)
-            .then(async(result) => {
+            .then(async (result) => {
                const uid =result.user.uid;
 
                let headers =new Headers();
@@ -31,13 +39,19 @@ const Signup =()=>{
                 };
                 await fetch("/api/users/createUser", requestOptions)
                     .then(response => response.text())
-                    .then(result => console.log(result))
-                    .catch(error => console.log('error', error));
-
+                    .then(result => {
+                        console.log(result)
+                        localStorage.setItem("isAuth", true);
+                        setIsAuth(true);
+                        navigate("/home");
+                    })
+                    .catch(error => alert(error));
+                
 
             }).catch((error) => {
                 // Handle Errors here.
                 console.log("Signup", error);
+                alert(error)
                 // ...
             });
     }
@@ -61,11 +75,18 @@ const Signup =()=>{
                      };
                     await fetch("/api/users/createUser", requestOptions)
                          .then(response => response.text())
-                         .then(result => console.log(result))
+                         .then(result => {
+                            console.log(result)
+                            localStorage.setItem("isAuth", true);
+                            setIsAuth(true);
+                            navigate("/home");
+                         })
                          .catch(error => console.log('error', error));
+                    
+                    
                 })
                 .catch((err)=>{
-                    console.error("Signup", err);
+                    console.error("Signup Register", err);
                     alert(err);
                 })
         }else{
@@ -79,7 +100,7 @@ const Signup =()=>{
     return(
         <FormContainer>
             <form onSubmit={register}>
-                <button onClick={googleSignUp}>Google Sign in</button>
+                
                 <label>Email</label>
                 <input value={email} onChange={(event) =>setEmail(event.target.value)}></input>
                 <label>Password</label>
@@ -88,6 +109,7 @@ const Signup =()=>{
                 <input value={verify} type="password" onChange={(event) =>setVerify(event.target.value)}></input>
                 <button type="submit">Signup</button>
             </form>
+            <button onClick={googleSignUp} type="button" class="login-with-google-btn" >Sign in with Google</button>
         </FormContainer>
     )
 
