@@ -3,6 +3,7 @@ import React, {useState, useEffect} from 'react';
 import {signInWithPopup, signInWithEmailAndPassword} from 'firebase/auth';
 import {auth,provider} from '../firebase-auth';
 import { useNavigate } from 'react-router-dom';
+import {Link} from "react-router-dom";
 import {FormContainer} from '../Styles/Form.Style';
 
 const Login=({isAuth,setIsAuth})=> {
@@ -96,6 +97,7 @@ const Login=({isAuth,setIsAuth})=> {
 
       </form>
       <button type="button" class="login-with-google-btn"  onClick={googleLogin}>Login with Google</button>
+      <Link to="/signup">New User?</Link>
     </FormContainer>
   )
 }

@@ -183,7 +183,7 @@ class VehicleForm extends React.Component {
 
     render(){
         const form = (
-            <div>
+            <div className="App-header">
                 
                 <Form>
                     <Form.Group className="mb-3" controlId="form">

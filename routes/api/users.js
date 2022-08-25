@@ -173,9 +173,9 @@ router.get('/totaler', (req,res) => {
                                 Object.keys(categories).forEach((key)=>{
                                     cur_cat[categories[key]]+=doc[key]
                                     cur_t+=doc[key]
-                                    console.log(doc[key])
+                                    
                                 })
-                                console.log(cur_t)
+                                
                                 
                                 obj.total+=cur_t;
                                 obj["total-date"].push(cur_t)
@@ -186,9 +186,7 @@ router.get('/totaler', (req,res) => {
                             }
                             i+=1
                         }
-                        
-
-
+                
                         res.status(200).json(obj);
                     })
                     .catch(err=>res.status(401).json({reason:"query error","obj":obj}));

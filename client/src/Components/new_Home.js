@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react';
+import React from 'react';
 import {HomeContainer} from '../Styles/Home.Style'; 
 
 import {auth} from '../firebase-auth';
@@ -19,12 +19,13 @@ class Home extends React.Component{
 
 
         }
+        
 
         
     }
     componentDidMount(){
         auth.onAuthStateChanged((currentUser)=>{
-            console.log(currentUser);
+            if(currentUser)
             this.setState({
                 user:currentUser||{}
             })

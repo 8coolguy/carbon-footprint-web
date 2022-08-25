@@ -3,6 +3,7 @@ import {GoogleAuthProvider,signInWithPopup,createUserWithEmailAndPassword} from 
 import {auth} from '../firebase-auth';
 import {useNavigate} from 'react-router-dom';
 import {FormContainer,GoogleButton} from '../Styles/Form.Style';
+import {Link} from "react-router-dom";
 
 
 
@@ -110,6 +111,7 @@ const Signup =({isAuth,setIsAuth})=>{
                 <button type="submit">Signup</button>
             </form>
             <button onClick={googleSignUp} type="button" class="login-with-google-btn" >Sign in with Google</button>
+            <Link to="/login">Already have an account?</Link>
         </FormContainer>
     )
 
