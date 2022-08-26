@@ -32,8 +32,9 @@ const Totaler  = ({user,span})=>{
 
     return(
         <div>
-            <h1>Last Update:{lastUpdate}</h1>
-            <h2>{total.total} pounds of C02 emissions in total</h2>
+            <h1>{total.total} pounds of C02 emissions in total</h1>
+            <p>Last Update:{lastUpdate}</p>
+            
         </div>
 
 

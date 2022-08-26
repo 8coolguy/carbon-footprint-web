@@ -1,5 +1,6 @@
 import './App.css';
 import Login from './Components/Login';
+import Profile from './Components/Profile';
 import Signup from './Components/Signup';
 import Home from './Components/new_Home';
 import DashNavbar from './Components/Navbar';
@@ -17,6 +18,7 @@ function App() {
       <Route path="/signup" element={<Signup isAuth={isAuth} setIsAuth={setIsAuth}/>}></Route>
       <Route path="/home" element={<Home isAuth={isAuth}/>}></Route>
       <Route path="/update" element={<VehicleForm isAuth={isAuth}/>}></Route>
+      <Route path="/profile" element={<Profile isAuth={isAuth}/>}></Route>
     </Routes>
 
   </Router>

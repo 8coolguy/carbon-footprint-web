@@ -155,7 +155,7 @@ router.get('/totaler', (req,res) => {
                             let cur_d=MoDaYeDate.of(docs[i].data()['date']["_seconds"],docs[i].data()['date']["_nanoseconds"]).toDate();
                             let next_d;
                             if(i==n-1){
-                                next_d=new Date(cur_d);
+                                next_d=new MoDaYeDate(new Date()).toDate();
                                 next_d.setDate(next_d.getDate() + 1)
                             }else{
                                 next_d=MoDaYeDate.of(docs[i+1].data()['date']["_seconds"],docs[i+1].data()['date']["_nanoseconds"]).toDate();
