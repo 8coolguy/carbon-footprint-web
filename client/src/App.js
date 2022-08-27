@@ -9,6 +9,7 @@ import React,{useState} from 'react';
 import {BrowserRouter as Router,Route,Routes} from "react-router-dom";
 function App() {
   const [isAuth,setIsAuth]=useState(localStorage.getItem("isAuth"));
+  const [date,setDate]=useState(localStorage.getItem("date"));
   return (
   <Router >
     
@@ -18,7 +19,8 @@ function App() {
       <Route path="/signup" element={<Signup isAuth={isAuth} setIsAuth={setIsAuth}/>}></Route>
       <Route path="/home" element={<Home isAuth={isAuth}/>}></Route>
       <Route path="/update" element={<VehicleForm isAuth={isAuth}/>}></Route>
-      <Route path="/profile" element={<Profile isAuth={isAuth}/>}></Route>
+      <Route path="/profile" element={<Profile setDate={setDate} isAuth={isAuth}/>}></Route>
+      <Route path="/edit" element={<VehicleForm date={date} isAuth={isAuth}/>}></Route>
     </Routes>
 
   </Router>

@@ -116,7 +116,7 @@ router.get('/totaler', (req,res) => {
     var uid, span;
     uid = req.query.uid
     span = req.query.span
-    if(!uid || !span){
+    if(!uid || !span || uid ===undefined || uid ==="undefined"){
         res.status(400).json({succes:false,reason:"no parameters"});
         return;
     }
@@ -409,44 +409,58 @@ router.post('/createEmission', (req,res) => {
  */
 router.post('/createdoc',(req,res)=>{
     var uid = req.body.uid;
+    var date;
+    if(req.body.date){
+        date=new Date(req.body.date);
+    }
     var data =req.body.data;
     if(!uid || !data){
         res.status(404).json({reason:"missing info to post"});
     }
     let userDoc =firestore.collection('users').doc(uid);
     userDoc.get().then((snap)=>{
+        //check if user exists
         if(snap.exists){
             let last_update =snap.data()["last_update"]
             //create new doc for the day in data'
             last_update =MoDaYeDate.of(last_update["_seconds"],last_update["_nanoseconds"])
-            let currentDate=new MoDaYeDate(Timestamp.now().toDate())
-            console.log(currentDate.toDate());
+            let currentDate=new MoDaYeDate(Timestamp.now().toDate());
+            if(date){
+                currentDate=new MoDaYeDate(date)
+            }
             
-            if (currentDate.equals(last_update)){//doc created today already just needs to upodate it
+            if (currentDate.equals(last_update) || date){//doc created today already just needs to upodate it
                 snap.ref.collection('carbon-emissions').where("date","==",currentDate.toDate()).limit(1).get()
                     .then(query=>{
                         if(query._size > 0){
+                            console.log("updating doc")
                             query.forEach((doc=>{
-                                console.log(doc.data());
                                 doc.ref.update(data)
                                     .then((ret)=>res.status(200).json(ret))
                                     .catch((err)=>res.status(400).json(err))
                             }))
                         }else{//no document in query occurs only on new account creation ]
                             
-                             
+                            console.log("creating  old doc")
                             data["date"]=currentDate.toDate();
                             snap.ref.collection('carbon-emissions').doc().create(data)
-                                .then(()=>userDoc.update({last_update:data["date"]}))
+                                .then(()=>{
+                                    if(!req.body.date){
+                                        userDoc.update({last_update:data["date"]})
+                                    }
+                                })
                                 .then((ret)=>res.status(200).json(ret))
                                 .catch((err)=>res.status(400).json(err));
                         }
                     })
                 
             }else{
+                //creating new doc
                 data["date"]=currentDate.toDate();
                 snap.ref.collection('carbon-emissions').doc().create(data)
-                    .then(()=>userDoc.update({last_update:data["date"]}))
+                    .then(()=>{
+                        userDoc.update({last_update:data["date"]})
+                    })
                     .then((ret)=>res.status(200).json(ret))
                     .catch((err)=>res.status(400).json(err));
             }

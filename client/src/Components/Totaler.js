@@ -9,7 +9,7 @@ const Totaler  = ({user,span})=>{
 
 
     const apiCall = async () => {
-        console.log("Totaler",user,span);
+        //console.log("Totaler",user,span);
         if(user){
             let res = await fetch(`/api/users/totaler?uid=${user.uid}&span=${span}`);
             res.json().then((data) =>{
@@ -22,7 +22,7 @@ const Totaler  = ({user,span})=>{
         }
     };
     useEffect(() => {
-        if(user != undefined && span){
+        if(user !== undefined && span){
             apiCall();
         }
     }, [span,user])
@@ -32,17 +32,9 @@ const Totaler  = ({user,span})=>{
 
     return(
         <div>
-            <h1>{total.total} pounds of C02 emissions in total</h1>
-            <p>Last Update:{lastUpdate}</p>
-            
+            <h1>{total.total} pounds of C02 emissions</h1>
+            <p>Last Update: {lastUpdate}</p>
         </div>
-
-
     )
-
-
-
-
-
 }
 export default Totaler;

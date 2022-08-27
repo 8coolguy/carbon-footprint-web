@@ -2,7 +2,7 @@ import React,{useState,useEffect} from 'react';
 import {useNavigate,} from 'react-router-dom';
 import {signOut} from 'firebase/auth';
 import {auth} from '../firebase-auth';
-import{NavContainer} from '../Styles/Nav.Style';
+
 
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -21,14 +21,13 @@ const DashNavbar =({ isAuth,setIsAuth })=>{
             
         });
     }
-    const updateForm=()=>{
-        navigate('/update')
-    }
+    
     useEffect(() => {
         auth.onAuthStateChanged((currentUser)=>{
             if(currentUser){
                 setUser(currentUser);
-                console.log("Nav", currentUser);
+            }else{
+                navigate('/login');
             }
         })
     }, [])
@@ -48,7 +47,7 @@ const DashNavbar =({ isAuth,setIsAuth })=>{
                             </Nav>
                             <Dropdown>
                                 <Dropdown.Toggle id="dropdown-basic">
-                                    {user.photoURL?<img src={user.photoURL} referrerpolicy="no-referrer" alt="" width="32" height="32" class="rounded-circle me-2"></img>:<img src="https://www.nicepng.com/png/detail/73-730154_open-default-profile-picture-png.png" referrerpolicy="no-referrer" alt="" width="32" height="32" class="rounded-circle me-2"></img>}
+                                    {user.photoURL?<img src={user.photoURL} referrerPolicy="no-referrer" alt="" width="32" height="32" className="rounded-circle me-2"></img>:<img src="https://www.nicepng.com/png/detail/73-730154_open-default-profile-picture-png.png" referrerPolicy="no-referrer" alt="" width="32" height="32" className="rounded-circle me-2"></img>}
                                 </Dropdown.Toggle>
                             <Dropdown.Menu>
                             <Dropdown.Item href="/profile">Profile</Dropdown.Item>

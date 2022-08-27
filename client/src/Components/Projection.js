@@ -5,7 +5,7 @@ import {colors} from "../Styles/Colors";
 import {Line} from 'react-chartjs-2';
 import {line_options} from "../Styles/Options";
 
-const LineChart = ({user,span}) =>{
+const Projection = ({user,span}) =>{
     const [total,setTotal] =useState({});
     Chart.register(...registerables);
 
@@ -29,26 +29,33 @@ const LineChart = ({user,span}) =>{
         ...colors
     };
     new_colors.total="grey";
+    const cumulativeSum = (sum => value => sum += value)(0);
+    const cumSumArr =(a)=>{
+        console.log(a);
+        if (!Array.isArray(a)) {
+            return []
+        }
+        //return a.map(cumulativeSum)
+    }
     const line_data=React.useMemo(()=>({
-        
         labels:total.labels,
-        datasets: Object.keys(new_colors).map((key)=>{
-            return {
-                "label":key,
+        datasets:
+            {
+                "label":"Total",
                 "fill":false,
-                "borderColor":new_colors[key],
-                "data":total[key+"-date"]
+                "borderColor":new_colors["total"],
+                "data":total["total-date"],
             }
-        })
+        
     }),[total]);
+    
     
 
     return(
         <div>
             <Line options={line_options} data={line_data}></Line>
         </div>
-
     )   
 }
 
-export default LineChart
+export default Projection;

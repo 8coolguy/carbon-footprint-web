@@ -8,8 +8,8 @@ import {auth} from '../firebase-auth';
 
 
 class VehicleForm extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         
         
         this.handleChange = this.handleChange.bind(this);
@@ -67,47 +67,50 @@ class VehicleForm extends React.Component {
 
     electric(){
         let total = (5 * this.state.electric / 30); 
-        this.updateDataState("electric",total);
         return total;
         
     }
     gas(){
         let total =(10 * this.state.gas / 30);
-        this.updateDataState("gas",total);
         return total;
         
     }
     carMileage(){
         let total = (0.8 * this.state.carMileage);
-        this.updateDataState("carMileage",total);
         return total;
         
     }
     airMileage(){
         let total =(0.43 * this.state.airMileage / 365);
-        this.updateDataState("airMileage",total);
         return total;
         
     }
     nonveg(){
         let total=(1.5 * this.state.nonveg / 7);
-        this.updateDataState("nonveg",total);
         return total;
         
     }
     veg(){
         let total= (0.3 * this.state.veg / 7);
-        this.updateDataState("veg",total);
         return total;
         
     }
-    updateDataState(cat,total){
-        let input =cat+"-input";
+    updateDataState(veg,nonveg,electric,gas,airMileage,carMileage){
         this.setState(prevState => ({
             data: {                   // object that we want to update
                 ...prevState.data,    // keep all other key-value pairs
-                [cat]: total,
-                [input]:this.state[cat]      // update the value of specific key
+                "veg": veg,            // update the value of specific key
+                "veg-input":this.state.veg,
+                "nonveg":nonveg,
+                "nonveg-input":this.state.nonveg,
+                "electric":electric,
+                "electric-input":this.state.electric,
+                "gas":gas,
+                "gas-input":this.state.gas,
+                "airMileage":airMileage,
+                "airMileage-input":this.state.airMileage,
+                "carMileage":carMileage,
+                "carMileage-input":this.state.carMileage
             }
         }),()=>{this.createDoc()})
     }
@@ -118,8 +121,8 @@ class VehicleForm extends React.Component {
         let airMileage=this.airMileage();
         let nonveg =this.nonveg();
         let  veg =this.veg();
-        console.log(this.state);
-        this.createDoc();
+        this.updateDataState(veg,nonveg,electric,gas,airMileage,carMileage);
+        
 
         const totalDailyCarbon = electric
              + gas
@@ -148,7 +151,6 @@ class VehicleForm extends React.Component {
     }
     createDoc(){
             console.log("Update",this.state.data);
-            console.log("Update",this.state.user);
             if(Object.keys(this.state.data).length ===12){
                 let headers =new Headers();
                 headers.append("Content-Type", "application/json");
@@ -156,6 +158,13 @@ class VehicleForm extends React.Component {
                     "uid":this.state.user.uid,
                     "data":this.state.data
                 });
+                if(this.props.date){
+                    raw = JSON.stringify({
+                        "uid":this.state.user.uid,
+                        "date":this.props.date,
+                        "data":this.state.data
+                    });
+                }
                 var requestOptions = {
                     method: 'POST',
                     headers: headers,
@@ -184,6 +193,7 @@ class VehicleForm extends React.Component {
     render(){
         const form = (
             <div className="App-header">
+                <p>Editing: {this.props.date?new Date(this.props.date).toString():"Today"}</p>
                 
                 <Form>
                     <Form.Group className="mb-3" controlId="form">

@@ -3,6 +3,7 @@ import {HomeContainer} from '../Styles/Home.Style';
 
 import {auth} from '../firebase-auth';
 
+import Projection from "./Projection";
 import LineChart from "./LineChart";
 import Totaler from "./Totaler";
 import PieChart from "./PieChart";
@@ -21,13 +22,7 @@ class Home extends React.Component{
             user:{},
             span:"a",
 
-
-
-
-
         }
-        
-
         
     }
     componentDidMount(){
@@ -50,7 +45,7 @@ class Home extends React.Component{
             <HomeContainer>
                 <Container>
                 <Row className="justify-content-md-center">
-                    <Col  md={6}>
+                    <Col md={6}>
                     <h1>Carbon Footprint Dashboard</h1>
                     
                    
@@ -66,11 +61,14 @@ class Home extends React.Component{
                 <Totaler user={this.state.user} span={this.state.span} />
                 <Row>
                 <Col md={8}>
-                <LineChart user={this.state.user} span={this.state.span}/>
+                    <LineChart user={this.state.user} span={this.state.span}/>
                 </Col>
                 <Col md={4}>
-                <PieChart user={this.state.user} span={this.state.span}/>
+                    <PieChart user={this.state.user} span={this.state.span}/>
                 </Col>
+                    <Col md={4}>
+                        
+                    </Col>
                 </Row>
                 </Container>
             </HomeContainer>
@@ -80,6 +78,10 @@ class Home extends React.Component{
         // <h3>Last Updated: {this.state.user}</h3>
         //<Pie options={options} data={pie_data}></Pie>
         //<Line options={line_options} data={line_data}></Line>
+
+        //<Col md={4}>
+        //<Projection user={this.state.user} span={this.state.span}/>
+        //</Col>
 
 
 

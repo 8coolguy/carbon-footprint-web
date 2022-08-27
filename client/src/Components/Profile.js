@@ -12,8 +12,8 @@ import { Pencil } from 'react-bootstrap-icons';
 
 class Profile extends React.Component{
     
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state={
             user:{},
             calendar_data:[]
@@ -31,14 +31,14 @@ class Profile extends React.Component{
     render(){
         return(
             <Row className="justify-content-md-center">
-            <Col  md={4}>
+            <Col md={4}>
                 {this.state.user.photoURL?<img src={this.state.user.photoURL} referrerpolicy="no-referrer" alt="" width="120" height="120" class="rounded-circle me-2"></img>:<img src="https://www.nicepng.com/png/detail/73-730154_open-default-profile-picture-png.png" referrerpolicy="no-referrer" alt="" width="120" height="120" class="rounded-circle me-2"></img>}
                 {this.state.user.displayName?<h3>{this.state.user.displayName}</h3>:<h3>{this.state.user.email}</h3>}
             </Col>
             <Col md={8}>
                 <h1>Profile</h1>
                 <p>Edit entries:</p>
-                <CalendarView user={this.state.user}/>
+                <CalendarView setDate={this.props.setDate} user={this.state.user}/>
             </Col>
             </Row>
 

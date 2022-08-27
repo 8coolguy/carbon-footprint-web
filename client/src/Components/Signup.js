@@ -110,7 +110,7 @@ const Signup =({isAuth,setIsAuth})=>{
                 <input value={verify} type="password" onChange={(event) =>setVerify(event.target.value)}></input>
                 <button type="submit">Signup</button>
             </form>
-            <button onClick={googleSignUp} type="button" class="login-with-google-btn" >Sign in with Google</button>
+            <button onClick={googleSignUp} type="button" className="login-with-google-btn" >Sign in with Google</button>
             <Link to="/login">Already have an account?</Link>
         </FormContainer>
     )

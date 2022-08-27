@@ -1,16 +1,18 @@
 import React,{useState,useEffect} from "react";
 import {Chart, registerables} from "chart.js";
 
+import { useNavigate } from 'react-router-dom';
+
 import {colors} from "../Styles/Colors";
 import {Pie} from 'react-chartjs-2';
 import {small_pie_options} from "../Styles/Options";
-import {pie_options} from "../Styles/Options";
 import Calendar from 'react-calendar';
 
 import "../Styles/Calendar.css";
 
-const CalendarView =({user})=>{
+const CalendarView =({user,setDate})=>{
     const [cal_data,setData]=useState([]);
+    const navigate =useNavigate();
     Chart.register(...registerables);
     useEffect(() => {
         if(user){
@@ -19,7 +21,6 @@ const CalendarView =({user})=>{
     }, [user])
 
     const apiCall = async () => {
-        console.log("Calendar View",user);
         if(user){
             let res = await fetch(`/api/users/totaler?uid=${user.uid}&span=y`);
             res.json().then((data) =>{
@@ -47,7 +48,7 @@ const CalendarView =({user})=>{
                 if(date.getDay() === new Date(x.date).getDay() &&
                 date.getMonth() === new Date(x.date).getMonth() &&
                 date.getDate() === new Date(x.date).getDate()){
-                    console.log(pie_data(x));
+                   
                     return x;
                     
                 }else{
@@ -75,10 +76,22 @@ const CalendarView =({user})=>{
         }
 
     }
+    const onDayClick=(value,event)=>{
+        setDate(value.toJSON())
+        if(value.getDay() === new Date().getDay() && value.getMonth() === new Date().getMonth() && value.getDate() === new Date().getDate()){
+            navigate("/update");
+        }else{
+            navigate("/edit");
+        }
+        
+
+
+
+    }
     
     return(
         <div>
-            <Calendar className="react-calendar" tileContent={({ activeStartDate, date, view }) => createPies(date)} maxDate={new Date()}/> 
+            <Calendar className="react-calendar" tileContent={({ activeStartDate, date, view }) => createPies(date)} maxDate={new Date()} onClickDay={(value, event) => onDayClick(value,event)}/> 
         </div>
 
 
