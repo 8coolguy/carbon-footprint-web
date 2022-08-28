@@ -10,33 +10,32 @@ import Calendar from 'react-calendar';
 
 import "../Styles/Calendar.css";
 
-const CalendarView =({user,setDate})=>{
+const CalendarView =({user,setDate,total})=>{
     const [cal_data,setData]=useState([]);
     const navigate =useNavigate();
     Chart.register(...registerables);
     useEffect(() => {
-        if(user){
+        if(total){
             apiCall();
         }
-    }, [user])
+    }, [total])
 
     const apiCall = async () => {
-        if(user){
-            let res = await fetch(`/api/users/totaler?uid=${user.uid}&span=y`);
-            res.json().then((data) =>{
-                var arr =[];
-                for(var i = 0; i < data.labels.length; i++){
-                    let obj={};
-                    
-                    
-                    obj.date =new Date(data.labels[i]);
-                    obj.transportation = data["transportation-date"][i];
-                    obj.food = data["food-date"][i];
-                    obj.energy = data["energy-date"][i];
-                    arr.push(obj)
-                }
-                setData(arr);
-            });
+        if(total){
+            
+            var arr =[];
+            for(var i = 0; i < total.labels.length; i++){
+                let obj={};
+                
+                
+                obj.date =new Date(total.labels[i]);
+                obj.transportation = total["transportation-date"][i];
+                obj.food = total["food-date"][i];
+                obj.energy = total["energy-date"][i];
+                arr.push(obj)
+            }
+            setData(arr);
+            
         }
     };
     const createPies = (date) =>{

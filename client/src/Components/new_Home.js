@@ -2,7 +2,7 @@ import React from 'react';
 import {HomeContainer} from '../Styles/Home.Style'; 
 
 import {auth} from '../firebase-auth';
-
+import 'chartjs-adapter-moment';
 import Projection from "./Projection";
 import LineChart from "./LineChart";
 import Totaler from "./Totaler";
@@ -21,6 +21,7 @@ class Home extends React.Component{
         this.state={
             user:{},
             span:"a",
+            total:{},
 
         }
         
@@ -30,11 +31,20 @@ class Home extends React.Component{
             if(currentUser){
                 this.setState({
                     user:currentUser||{}
-                });
+                },()=>this.apiCall());
             }
         })
     }
-    
+    apiCall = async () => {
+        //calls totaler to make some changes
+        if(this.state.user){
+            let res = await fetch(`/api/users/totaler?uid=${this.state.user.uid}&span=${this.state.span}`);
+            res.json().then((data) =>{
+                this.setState({total:data})
+                //setTotal(data);
+            });
+        }
+    };
     
 
     
@@ -47,28 +57,27 @@ class Home extends React.Component{
                 <Row className="justify-content-md-center">
                     <Col md={6}>
                     <h1>Carbon Footprint Dashboard</h1>
-                    
-                   
+                                       
                     <ButtonGroup>
-                        <Button onClick={()=>this.setState({span:"w"})}>Last Week</Button>
-                        <Button onClick={()=>this.setState({span:"m"})}>Last Month</Button>
-                        <Button onClick={()=>this.setState({span:"y"})}>Last Year</Button>
-                        <Button onClick={()=>this.setState({span:"a"})}> All Data </Button>
+                        <Button onClick={()=>this.setState({span:"w"},()=>this.apiCall())}>Last Week</Button>
+                        <Button onClick={()=>this.setState({span:"m"},()=>this.apiCall())}>Last Month</Button>
+                        <Button onClick={()=>this.setState({span:"y"},()=>this.apiCall())}>Last Year</Button>
+                        <Button onClick={()=>this.setState({span:"a"},()=>this.apiCall())}> All Data </Button>
                     </ButtonGroup>
                     </Col>
                 </Row>
                 
-                <Totaler user={this.state.user} span={this.state.span} />
+                <Totaler user={this.state.user} span={this.state.span} total={this.state.total}/>
                 <Row>
                 <Col md={8}>
-                    <LineChart user={this.state.user} span={this.state.span}/>
+                    <LineChart user={this.state.user} span={this.state.span} total={this.state.total}/>
                 </Col>
                 <Col md={4}>
-                    <PieChart user={this.state.user} span={this.state.span}/>
+                    <PieChart user={this.state.user} span={this.state.span} total={this.state.total}/>
                 </Col>
-                    <Col md={4}>
-                        
-                    </Col>
+                    
+                    <Projection user={this.state.user} span={this.state.span} years={5} total={this.state.total}/> 
+                    
                 </Row>
                 </Container>
             </HomeContainer>

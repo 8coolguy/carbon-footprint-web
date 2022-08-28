@@ -6,24 +6,24 @@ import {Pie} from 'react-chartjs-2';
 import {pie_options} from "../Styles/Options";
 //import 'chartjs-adapter-moment';
 
-const PieChart = ({user,span}) =>{
-    const [total,setTotal]=useState({});
+const PieChart = ({user,span,total}) =>{
+    //const [total,setTotal]=useState({});
     Chart.register(...registerables);
 
-    const apiCall = async () => {
-        console.log("Pie Chart",user,span);
-        if(user){
-            let res = await fetch(`/api/users/totaler?uid=${user.uid}&span=${span}`);
-            res.json().then((data) =>{
-                setTotal(data);
-            });
-        }
-    };
-    useEffect(() => {
-        if(user != undefined && span){
-            apiCall();
-        }
-    }, [span,user]);
+    // const apiCall = async () => {
+    //     console.log("Pie Chart",user,span);
+    //     if(user){
+    //         let res = await fetch(`/api/users/totaler?uid=${user.uid}&span=${span}`);
+    //         res.json().then((data) =>{
+    //             setTotal(data);
+    //         });
+    //     }
+    // };
+    // useEffect(() => {
+    //     if(user != undefined && span){
+    //         apiCall();
+    //     }
+    // }, [span,user]);
     const pie_data=React.useMemo(()=>({
         labels:Object.keys(colors),
         datasets: [{

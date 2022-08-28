@@ -184,7 +184,7 @@ class VehicleForm extends React.Component {
                 .then(data=> {
                     this.categories.forEach((key)=>{
                         let datakey = key+"-input";
-                        this.setState({[key]:data[datakey]},()=>console.log(this.state));
+                        this.setState({[key]:data[datakey]});
                     })
                 })
             return;

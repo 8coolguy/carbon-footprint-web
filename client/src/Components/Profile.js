@@ -24,10 +24,20 @@ class Profile extends React.Component{
             if(currentUser){
                 this.setState({
                     user:currentUser||{}
-                },);
+                },()=>this.apiCall());
             }
         })
     }
+    apiCall = async () => {
+        //calls totaler to make some changes
+        if(this.state.user){
+            let res = await fetch(`/api/users/totaler?uid=${this.state.user.uid}&span=y`);
+            res.json().then((data) =>{
+                this.setState({total:data})
+                //setTotal(data);
+            });
+        }
+    };
     render(){
         return(
             <Row className="justify-content-md-center">
@@ -38,7 +48,7 @@ class Profile extends React.Component{
             <Col md={8}>
                 <h1>Profile</h1>
                 <p>Edit entries:</p>
-                <CalendarView setDate={this.props.setDate} user={this.state.user}/>
+                <CalendarView setDate={this.props.setDate} total={this.state.total}/>
             </Col>
             </Row>
 

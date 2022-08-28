@@ -41,3 +41,19 @@ export const line_options= {
         },
     }
 }
+export const total_line_options= {
+    type:'line',
+    scales: {
+        x: {
+            type: 'time'
+        }
+    },
+    plugins:{
+        title:{
+            display:true,
+            text: "Future Projections"
+
+        }
+
+    }
+}

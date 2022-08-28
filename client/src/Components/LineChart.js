@@ -5,25 +5,25 @@ import {colors} from "../Styles/Colors";
 import {Line} from 'react-chartjs-2';
 import {line_options} from "../Styles/Options";
 
-const LineChart = ({user,span}) =>{
-    const [total,setTotal] =useState({});
+const LineChart = ({user,span,total}) =>{
+    //const [total,setTotal] =useState({});
     Chart.register(...registerables);
 
-    const apiCall = async () => {
-        //calls totaler to make some changes
-        if(user){
-            let res = await fetch(`/api/users/totaler?uid=${user.uid}&span=${span}`);
-            res.json().then((data) =>{
-                setTotal(data);
-            });
-        }
-    };
+    // const apiCall = async () => {
+    //     //calls totaler to make some changes
+    //     if(user){
+    //         let res = await fetch(`/api/users/totaler?uid=${user.uid}&span=${span}`);
+    //         res.json().then((data) =>{
+    //             setTotal(data);
+    //         });
+    //     }
+    // };
     
-    useEffect(() => {
-        if(user !== undefined && span){
-            apiCall();
-        }
-    }, [span,user])
+    // useEffect(() => {
+    //     if(user !== undefined && span){
+    //         apiCall();
+    //     }
+    // }, [span,user])
 
     let new_colors={
         ...colors
