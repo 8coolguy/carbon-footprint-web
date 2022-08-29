@@ -13,6 +13,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Card from 'react-bootstrap/Card' ;
 
 
 class Home extends React.Component{
@@ -66,17 +67,23 @@ class Home extends React.Component{
                     </ButtonGroup>
                     </Col>
                 </Row>
-                
+                <Card>
                 <Totaler user={this.state.user} span={this.state.span} total={this.state.total}/>
+                </Card>
                 <Row>
                 <Col md={8}>
-                    <LineChart user={this.state.user} span={this.state.span} total={this.state.total}/>
+                    <Card>
+                        <LineChart user={this.state.user} span={this.state.span} total={this.state.total}/>
+                    </Card>
                 </Col>
                 <Col md={4}>
-                    <PieChart user={this.state.user} span={this.state.span} total={this.state.total}/>
+                    <Card>
+                        <PieChart user={this.state.user} span={this.state.span} total={this.state.total}/>
+                    </Card>
                 </Col>
-                    
-                    <Projection user={this.state.user} span={this.state.span} years={5} total={this.state.total}/> 
+                    <Card>
+                        <Projection user={this.state.user} span={this.state.span} years={5} total={this.state.total}/> 
+                    </Card>
                     
                 </Row>
                 </Container>

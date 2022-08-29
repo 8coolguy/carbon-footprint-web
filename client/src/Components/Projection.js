@@ -4,10 +4,14 @@ import {Chart, registerables} from "chart.js";
 import {colors} from "../Styles/Colors";
 import {Line} from 'react-chartjs-2';
 import {total_line_options} from "../Styles/Options";
+
 import {line_options} from "../Styles/Options";
+
+
 const Projection = ({user,span,years,total}) =>{
     //const [total,setTotal] =useState({});
     Chart.register(...registerables);
+    
 
     // const apiCall = async () => {
     //     //calls totaler to make some changes
@@ -83,6 +87,11 @@ const Projection = ({user,span,years,total}) =>{
                 "fill":false,
                 "borderColor":new_colors["total"],
                 "data":arrToPoint(strToDate(total.labels),cumSumArr(total["total-date"]),years),
+                trendlineLinear: {
+                    style: "grey",
+                    lineStyle: "line",
+                    width: 1
+                }
             }],
         plugins:{
         title:{
