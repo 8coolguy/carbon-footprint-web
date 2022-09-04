@@ -15,16 +15,28 @@ const categories={
     "carMileage":"transportation",
     "airMileage":"transportation",
 }
-router.get("/",(req,res)=>{
-    res.status(200).json({urls:
-        {
-            "1 get":"/total?uid&span",
-            "2 get": "/lastupdatecat?uid&span",
-            "3 post":"/createUser?uid",
-            "4 post":"/createEmisson?uid&type&total",
-        }
-    })
-});
+//router.use(decodeIDToken);
+/**
+ * Decodes the JSON Web Token sent via the frontend app
+ * Makes the currentUser (firebase) data available on the body.
+ */
+async function decodeIDToken(req, res, next) {
+    
+  if (req.headers?.authorization?.startsWith('Bearer ')) {
+    const idToken = req.headers.authorization.split('Bearer ')[1];
+    
+    try {
+      const decodedToken = await admin.auth().verifyIdToken(idToken);
+      req['currentUser'] = decodedToken;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  next();
+}
+
+
 /**
  * GET USER totals
  * Returns total C02 usage within a span .
@@ -66,8 +78,9 @@ router.get('/total', (req,res) => {
                             let curDoc =doc.data();
                             let d = curDoc['date'];
                             
-                            //console.log(MoDaYeDate.of(d["_seconds"],d["_nanoseconds"]).toDate());
                             
+                            
+                                                        
                             let total =curDoc['carbon-emission'];
                             obj['total']+=total;
                             if (curDoc["type"]){
@@ -468,6 +481,46 @@ router.post('/createdoc',(req,res)=>{
             res.status(400).json({"reason":"uid does not exist"})
         }
     })
+
+})
+router.get('/profile',(req,res)=>{
+    var uid = req.query.uid;
+
+    let userDoc =firestore.collection('users').doc(uid);
+    userDoc.get()
+        .then((snap)=>{
+        //check if user exists
+        if(snap.exists){
+            res.status(200).json(snap.data());
+        }else{
+            res.status(400).json({"reason":"user not found"})
+        }
+        })
+        .catch(()=>res.status(400).json({"reason":"idk"}))
+        
+
+})
+
+router.post('/profile',(req,res)=>{
+    var uid =req.body.uid;
+    var data=req.body.data;
+
+    let userDoc =firestore.collection('users').doc(uid);
+    userDoc.get()
+        .then((snap)=>{
+        //check if user exists
+        if(snap.exists){
+            snap.ref.update(data)
+                .then(()=>res.status(200).json(data))
+                .catch(()=>res.status(400).json({"reason":"idk"}))
+            
+        }else{
+            res.status(400).json({"reason":"user not found"})
+        }
+        })
+        .catch(()=>res.status(400).json({"reason":"idk"}))
+
+
 
 })
 

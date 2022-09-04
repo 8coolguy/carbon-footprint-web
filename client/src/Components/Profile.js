@@ -1,9 +1,7 @@
 import React from "react";
 import {auth} from '../firebase-auth';
 
-import Calendar from 'react-calendar';
-import CalendarView from "./CalendarView";
-import 'react-calendar/dist/Calendar.css';
+import Editable from "./Editable";
 
 //bootstrap
 import Row from "react-bootstrap/Row";
@@ -16,8 +14,9 @@ class Profile extends React.Component{
     constructor(props){
         super(props);
         this.state={
+            householdSize:"",
+            zipcode:"",
             user:{},
-            calendar_data:[]
         }
     }
     componentDidMount(){
@@ -32,29 +31,73 @@ class Profile extends React.Component{
     apiCall = async () => {
         //calls totaler to make some changes
         if(this.state.user){
-            let res = await fetch(`/api/users/totaler?uid=${this.state.user.uid}&span=y`);
-            res.json().then((data) =>{
-                this.setState({total:data})
+            let res = await fetch(`/api/users/profile?uid=${this.state.user.uid}`);
+            res.json().then((profile) =>{
+                console.log(profile)
+                this.setState({householdSize:profile.householdSize,zipcode:profile.zipcode})
                 //setTotal(data);
             });
         }
     };
+    updateProfile = async (category)=>{
+        console.log(this.state);
+        if(this.state.user && ((this.state.householdSize!==undefined && category==="householdSize" && this.state.householdSize.length >= 1) || (this.state.zipcode!== undefined && category==="zipcode" && this.state.zipcode.length >5))){
+            let headers =new Headers();
+            headers.append("Content-Type", "application/json");
+            let data={};
+            data[category]=this.state[category];
+            var raw = JSON.stringify({
+                "uid":this.state.user.uid,
+                "data":data
+            });
+            console.log(this.state.data);
+            var requestOptions = {
+                method: 'POST',
+                headers: headers,
+                body: raw,
+                redirect: 'follow'
+            };
+            let res = await fetch(`/api/users/profile`,requestOptions);
+            res.json().then((data) =>{
+                console.log(data)
+                
+                //setTotal(data);
+            });
+        }
+    }
+    
     render(){
         return(
             <Row className="justify-content-md-center">
-            <Col md={4}>
-                <Card>
-                {this.state.user.photoURL?<img src={this.state.user.photoURL} referrerpolicy="no-referrer" alt="" width="120" height="120" class="rounded-circle me-2"></img>:<img src="https://www.nicepng.com/png/detail/73-730154_open-default-profile-picture-png.png" referrerpolicy="no-referrer" alt="" width="120" height="120" class="rounded-circle me-2"></img>}
-                {this.state.user.displayName?<h3>{this.state.user.displayName}</h3>:<h3>{this.state.user.email}</h3>}
-                </Card>
-            </Col>
-            <Col md={8}>
-                
-                <h1>Profile</h1>
-                <p>Edit entries:</p>
-                <CalendarView setDate={this.props.setDate} total={this.state.total}/>
-                
-            </Col>
+                <Col  className="justify-content-md-center" md={8}>
+                    <Card>
+                    {this.state.user.photoURL?<img src={this.state.user.photoURL} referrerPolicy="no-referrer" alt="" width="120" height="120" className="justify-content-md-center rounded-circle me-2"></img>:<img src="https://www.nicepng.com/png/detail/73-730154_open-default-profile-picture-png.png" referrerPolicy="no-referrer" alt="" width="120" height="120" className="rounded-circle me-2"></img>}
+                    {this.state.user.displayName?<h3>{this.state.user.displayName}</h3>:<h3>{this.state.user.email}</h3>}
+                    <p>Household Size:</p>
+                        <Editable text={this.state.householdSize} placeholder="Put in your household Size" type="input">
+                            <input
+                                type="text"
+                                name="householdSize"
+                                placeholder="Household Size"
+                                value={this.state.householdSize}
+                                onChange={e => this.setState({householdSize:e.target.value},()=>this.updateProfile(e.target.name))}
+                            />  
+                        </Editable>
+                    
+                    <p>Zipcode: </p>
+                        <Editable text={this.state.zipcode} placeholder="Put in your zipcode." type="input">
+                            <input
+                                type="text"
+                                name="zipcode"
+                                placeholder="Zipcode"
+                                value={this.state.zipcode}
+                                onChange={e => this.setState({zipcode:e.target.value},()=>this.updateProfile(e.target.name))}
+                            />
+                        </Editable>
+                    
+
+                    </Card>
+                </Col>
             </Row>
 
         )

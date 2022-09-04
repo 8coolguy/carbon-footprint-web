@@ -15,6 +15,9 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Card from 'react-bootstrap/Card' ;
 
+import CalendarView from "./CalendarView";
+import 'react-calendar/dist/Calendar.css';
+
 
 class Home extends React.Component{
     constructor(){
@@ -67,23 +70,33 @@ class Home extends React.Component{
                     </ButtonGroup>
                     </Col>
                 </Row>
-                <Card>
-                <Totaler user={this.state.user} span={this.state.span} total={this.state.total}/>
+
+                <Card className="justify-content-md-center">
+                    <Totaler user={this.state.user} span={this.state.span} total={this.state.total}/>
                 </Card>
+                <Row className="justify-content-md-center">
+                    <Col md={8}>
+                        <Card>
+                            <LineChart user={this.state.user} span={this.state.span} total={this.state.total}/>
+                        </Card>
+                    </Col>
+                    <Col md={4}>
+                        <Card>
+                            <PieChart user={this.state.user} span={this.state.span} total={this.state.total}/>
+                        </Card>
+                    </Col>
                 <Row>
-                <Col md={8}>
-                    <Card>
-                        <LineChart user={this.state.user} span={this.state.span} total={this.state.total}/>
-                    </Card>
-                </Col>
-                <Col md={4}>
-                    <Card>
-                        <PieChart user={this.state.user} span={this.state.span} total={this.state.total}/>
-                    </Card>
-                </Col>
-                    <Card>
-                        <Projection user={this.state.user} span={this.state.span} years={5} total={this.state.total}/> 
-                    </Card>
+                    <Col md={8}>
+                        <Card>
+                            <Projection user={this.state.user} span={this.state.span} years={5} total={this.state.total}/> 
+                        </Card>
+                    </Col>
+                    <Col md={4}>
+                        <Card >
+                            <CalendarView  setDate={this.props.setDate} total={this.state.total}/>
+                        </Card>
+                    </Col>
+                </Row>
                     
                 </Row>
                 </Container>

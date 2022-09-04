@@ -17,9 +17,9 @@ function App() {
     <Routes>
       <Route path="/login" element={<Login isAuth={isAuth} setIsAuth={setIsAuth}/>}></Route>
       <Route path="/signup" element={<Signup isAuth={isAuth} setIsAuth={setIsAuth}/>}></Route>
-      <Route path="/home" element={<Home isAuth={isAuth}/>}></Route>
+      <Route path="/home" element={<Home setDate={setDate} isAuth={isAuth}/>}></Route>
       <Route path="/update" element={<VehicleForm isAuth={isAuth}/>}></Route>
-      <Route path="/profile" element={<Profile setDate={setDate} isAuth={isAuth}/>}></Route>
+      <Route path="/profile" element={<Profile isAuth={isAuth}/>}></Route>
       <Route path="/edit" element={<VehicleForm date={date} isAuth={isAuth}/>}></Route>
     </Routes>
 

@@ -8,9 +8,10 @@ const users =require("./routes/api/users");
 
 
 
+
+
 //bodyparser middleware
 app.use(bodyParser.json());
-
 //for cross origin sharing 
 app.use(cors());
 //server logging or something
@@ -24,6 +25,9 @@ app.use(express.static(path.join(__dirname+'/client/', 'build')));
 app.get('/*', function (req, res) {
     res.sendFile(path.join(__dirname+'/client/', 'build', 'index.html'));
 });
+
+
+
 
 //sert up the port number 
 const port = process.env.PORT || 8000;

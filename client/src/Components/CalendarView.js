@@ -21,7 +21,7 @@ const CalendarView =({user,setDate,total})=>{
     }, [total])
 
     const apiCall = async () => {
-        if(total){
+        if(total!==undefined){
             
             var arr =[];
             for(var i = 0; i < total.labels.length; i++){
@@ -34,17 +34,18 @@ const CalendarView =({user,setDate,total})=>{
                 obj.energy = total["energy-date"][i];
                 arr.push(obj)
             }
+            
             setData(arr);
             
         }
     };
-    const createPies = (date) =>{
+    const createPies = (date,view) =>{
         const findDate =
             
             cal_data.find((x) => {
                 
                 
-                if(date.getDay() === new Date(x.date).getDay() &&
+                if(date.getUTCFullYear() === new Date(x.date).getUTCFullYear() &&
                 date.getMonth() === new Date(x.date).getMonth() &&
                 date.getDate() === new Date(x.date).getDate()){
                    
@@ -55,7 +56,8 @@ const CalendarView =({user,setDate,total})=>{
                 }
                 ;
             });
-        
+        if(view!=="month")
+            return (<></>)
         return findDate?
             (
                 <div>
@@ -90,7 +92,8 @@ const CalendarView =({user,setDate,total})=>{
     
     return(
         <div>
-            <Calendar className="react-calendar" tileContent={({ activeStartDate, date, view }) => createPies(date)} maxDate={new Date()} onClickDay={(value, event) => onDayClick(value,event)}/> 
+            <h2>Edit entries:</h2>
+            <Calendar className="react-calendar justify-content-md-center" tileContent={({ activeStartDate, date, view }) =>createPies(date,view)} maxDate={new Date()} onClickDay={(value, event) => onDayClick(value,event)}/> 
         </div>
 
 
