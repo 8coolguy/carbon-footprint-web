@@ -98,6 +98,7 @@ const Login=({isAuth,setIsAuth})=> {
       </form>
       <button type="button" className="login-with-google-btn"  onClick={googleLogin}>Login with Google</button>
       <Link to="/signup">New User?</Link>
+      <Link to="/frogot">Frogot Password</Link>
     </FormContainer>
   )
 }

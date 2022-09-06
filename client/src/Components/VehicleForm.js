@@ -5,6 +5,11 @@ import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
 //import footpic from './footpriint.ico'
 import {auth} from '../firebase-auth';
+import electricIcon from "../images/electric.png";
+import gasIcon from "../images/gas.png";
+import vegIcon from "../images/veg.png";
+import nonvegIcon from "../images/nonveg.png";
+import airMileageIcon from "../images/airMileage.png";
 
 
 class VehicleForm extends React.Component {
@@ -197,31 +202,39 @@ class VehicleForm extends React.Component {
                 
                 <Form>
                     <Form.Group className="mb-3" controlId="form">
+                    <img width="40" height="40" src={electricIcon} alt="h"></img>
                     <Form.Label>Electricity Bill</Form.Label>
                     <Form.Control type="text" name="electric" value={this.state.electric} placeholder="Enter this month's electricity bill payment in dollars" onChange={this.handleChange}/>
+                    <input type="checkbox" id="solar" value="Solar"></input>
+                    <label htmlFor="solar"> Solar </label>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="form">
+                    <img width="40" height="40" src={gasIcon} alt=""></img>
                     <Form.Label>Gas Bill</Form.Label>
                     <Form.Control type="number" name="gas" value={this.state.gas} placeholder="Enter this month's gas bill payment in dollars" onChange={this.handleChange}/>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="form">
+                    <img width="40" height="40" src="" alt=""></img>
                     <Form.Label>Number of Miles driven per day by non electric vehicles</Form.Label>
                     <Form.Control type="number" name="carMileage" value={this.state.carMileage} placeholder="Enter number of miles driven per day" onChange={this.handleChange}/>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="form">
+                    <img width="40" height="40" src={airMileageIcon} alt=""></img>
                     <Form.Label>Air Travel: Miles traveled</Form.Label>
                     <Form.Control type="number" name="airMileage" value={this.state.airMileage} placeholder="Enter number of miles traveled this year by airplane" onChange={this.handleChange}/>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="form">
+                    <img width="40" height="40" src={nonvegIcon} alt=""></img>
                     <Form.Label>Non-veg servings per week</Form.Label>
                     <Form.Control type="number" name="nonveg" value={this.state.nonveg} placeholder="Enter the number of non-veg servings you consume per week" onChange={this.handleChange}/>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="form">
+                    <img width="40" height="40" src={vegIcon} alt=""></img>
                     <Form.Label>Veg servings per week</Form.Label>
                     <Form.Control type="number" name="veg" value={this.state.veg} placeholder="Enter the number of veg servings you consume per week" onChange={this.handleChange}/>
                     </Form.Group>

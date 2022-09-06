@@ -5,6 +5,7 @@ import Signup from './Components/Signup';
 import Home from './Components/new_Home';
 import DashNavbar from './Components/Navbar';
 import VehicleForm from "./Components/VehicleForm";
+import PasswordReset from "./Components/PasswordReset";
 import React,{useState} from 'react';
 import {BrowserRouter as Router,Route,Routes} from "react-router-dom";
 function App() {
@@ -21,6 +22,7 @@ function App() {
       <Route path="/update" element={<VehicleForm isAuth={isAuth}/>}></Route>
       <Route path="/profile" element={<Profile isAuth={isAuth}/>}></Route>
       <Route path="/edit" element={<VehicleForm date={date} isAuth={isAuth}/>}></Route>
+      <Route path="/frogot" element={<PasswordReset/>}></Route>
     </Routes>
 
   </Router>

@@ -37,7 +37,11 @@ const DashNavbar =({ isAuth,setIsAuth })=>{
                     document.getElementById("updatelink").style.color="green";
                 }
             }else{
-                navigate('/login');
+                if(location.pathname!=="/login" && location.pathname!=="/signup" && location.pathname!=="/frogot"){
+                    navigate("/login");
+                    
+                }
+                
             }
         })
     }, [])

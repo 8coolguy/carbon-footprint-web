@@ -33,19 +33,20 @@ class Profile extends React.Component{
         if(this.state.user){
             let res = await fetch(`/api/users/profile?uid=${this.state.user.uid}`);
             res.json().then((profile) =>{
-                console.log(profile)
+                console.log("Profile",profile)
                 this.setState({householdSize:profile.householdSize,zipcode:profile.zipcode})
                 //setTotal(data);
             });
         }
     };
     updateProfile = async (category)=>{
-        console.log(this.state);
-        if(this.state.user && ((this.state.householdSize!==undefined && category==="householdSize" && this.state.householdSize.length >= 1) || (this.state.zipcode!== undefined && category==="zipcode" && this.state.zipcode.length >5))){
+        console.log("Update Prof",this.state);
+        if(this.state.user && ((this.state.householdSize!==undefined && category==="householdSize" && this.state.householdSize.length >= 1) || (this.state.zipcode!== undefined && category==="zipcode" && this.state.zipcode.length >=5))){
             let headers =new Headers();
             headers.append("Content-Type", "application/json");
             let data={};
             data[category]=this.state[category];
+            console.log("Data",data)
             var raw = JSON.stringify({
                 "uid":this.state.user.uid,
                 "data":data
