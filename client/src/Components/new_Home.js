@@ -1,6 +1,6 @@
 import React from 'react';
 import {HomeContainer} from '../Styles/Home.Style'; 
-
+import {Timestamp} from 'firebase/firestore';
 import {auth} from '../firebase-auth';
 import 'chartjs-adapter-moment';
 import Projection from "./Projection";
@@ -26,6 +26,7 @@ class Home extends React.Component{
             user:{},
             span:"a",
             total:{},
+            lastUpdate:""
 
         }
         
@@ -42,11 +43,13 @@ class Home extends React.Component{
     apiCall = async () => {
         //calls totaler to make some changes
         if(this.state.user){
-            let res = await fetch(`/api/users/totaler?uid=${this.state.user.uid}&span=${this.state.span}`);
+            let res = await fetch(`/api/users/totaler?span=${this.state.span}`);
             res.json().then((data) =>{
                 this.setState({total:data})
                 //setTotal(data);
             });
+            res=await fetch('/api/users/lastupdated');
+            res.json().then((data)=>this.setState({lastUpdate:new Timestamp(data["_seconds"],data["_nanoseconds"]).toDate().toString()}));
         }
     };
     
@@ -72,23 +75,23 @@ class Home extends React.Component{
                 </Row>
 
                 <Card className="justify-content-md-center">
-                    <Totaler user={this.state.user} span={this.state.span} total={this.state.total}/>
+                    <Totaler lastUpdate={this.state.lastUpdate} total={this.state.total}/>
                 </Card>
                 <Row className="justify-content-md-center">
                     <Col md={8}>
                         <Card>
-                            <LineChart user={this.state.user} span={this.state.span} total={this.state.total}/>
+                            <LineChart  total={this.state.total}/>
                         </Card>
                     </Col>
                     <Col md={4}>
                         <Card>
-                            <PieChart user={this.state.user} span={this.state.span} total={this.state.total}/>
+                            <PieChart  total={this.state.total}/>
                         </Card>
                     </Col>
                 <Row>
                     <Col md={8}>
                         <Card>
-                            <Projection user={this.state.user} span={this.state.span} years={5} total={this.state.total}/> 
+                            <Projection years={5} total={this.state.total}/> 
                         </Card>
                     </Col>
                     <Col md={4}>
@@ -112,13 +115,7 @@ class Home extends React.Component{
         //<Projection user={this.state.user} span={this.state.span}/>
         //</Col>
 
-
-
-
-
-
     }
-
 
 }
 export default Home;

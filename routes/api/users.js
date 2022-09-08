@@ -2,6 +2,7 @@ const express =require('express');
 const app =require('../../firebase')
 const firebase =require('firebase-admin');
 const {getFirestore,Timestamp} =require('firebase-admin/firestore');
+const {getAuth} =require('firebase-admin/auth');
 const router =express.Router();
 const MoDaYeDate = require("../../CustomObjects/MonthDayYearDate")
 
@@ -15,25 +16,59 @@ const categories={
     "carMileage":"transportation",
     "airMileage":"transportation",
 }
-//router.use(decodeIDToken);
+router.use(decodeIDToken);
 /**
  * Decodes the JSON Web Token sent via the frontend app
  * Makes the currentUser (firebase) data available on the body.
  */
+router.get('/',(req,res)=>{
+    res.status(200).json({succes:true,path:"/"})
+})
+router.get('/logout',(req,res)=>{
+    res.clearCookie('session');  
+	res.redirect('/login');
+})
+router.get('/login',(req,res)=>{
+    const idToken =req.headers["x-access-token"];
+    const expiresIn = 60 * 60 * 24 * 5 * 1000;
+    getAuth() 
+		.createSessionCookie(idToken, { expiresIn })
+		.then((sessionCookie) => { 
+		// Set cookie policy for session cookie.        
+			const options = { maxAge: expiresIn, httpOnly: true, secure: true };
+			res.cookie('session', sessionCookie, options);
+			res.end(JSON.stringify({ status: 'success',cookie:"created"}));
+		},(error) => {
+			    res.status(401).send('UNAUTHORIZED REQUEST!');
+			}
+		);
+})
 async function decodeIDToken(req, res, next) {
-    
-  if (req.headers?.authorization?.startsWith('Bearer ')) {
-    const idToken = req.headers.authorization.split('Bearer ')[1];
-    
-    try {
-      const decodedToken = await admin.auth().verifyIdToken(idToken);
-      req['currentUser'] = decodedToken;
-    } catch (err) {
-      console.log(err);
+    if (req.headers["x-access-token"]) {
+        getAuth()
+            .verifyIdToken(req.headers["x-access-token"])
+            .then(()=>next())
+            .catch((err)=>{
+                res.status(400).json({reason:"Not Authorzied"})
+            })
+            
+    }else if(req.headers.cookie){
+        getAuth()
+            .verifySessionCookie(req.headers.cookie.replace("session=",""), true /** checkRevoked */) 
+            .then((decodedClaims) => {
+                req.uid=decodedClaims.uid;
+                next();
+            })
+            .catch((error) => {
+            // Session cookie is unavailable or invalid. Force user to login.      
+                res.status(400).json({reason:"Not Authorzied"});
+            })
     }
-  }
-
-  next();
+    else{
+        res.status(400).json({reason:"Not Authorzied"});
+        res.redirect("/login");
+    }
+    
 }
 
 
@@ -46,9 +81,8 @@ async function decodeIDToken(req, res, next) {
  * @return {JSONObject} object of all the types of C02 usage.
  */
 router.get('/total', (req,res) => {
-    
     var uid, span;
-    uid = req.query.uid
+    uid = req.uid
     span = req.query.span
     if(!uid || !span){
         res.status(400).json({succes:false,reason:"no parameters"});
@@ -127,7 +161,7 @@ router.get('/total', (req,res) => {
 router.get('/totaler', (req,res) => {
     
     var uid, span;
-    uid = req.query.uid
+    uid = req.uid
     span = req.query.span
     if(!uid || !span || uid ===undefined || uid ==="undefined"){
         res.status(400).json({succes:false,reason:"no parameters"});
@@ -222,7 +256,7 @@ router.get('/totaler', (req,res) => {
  */
 router.get('/all',(req,res)=>{
     var uid, span;
-    uid = req.query.uid
+    uid = req.uid
     span = req.query.span
     if(!uid || !span){
         res.status(400).json({succes:false,reason:"no parameters"});
@@ -281,7 +315,7 @@ router.get('/all',(req,res)=>{
  */
 router.get('/lastupdatecat',(req,res)=>{
     const category =req.query.category;
-    const uid=req.query.uid;
+    const uid=req.uid;
 
     let docRef = firestore.doc(`users/${uid}`);
     docRef.get()
@@ -306,7 +340,7 @@ router.get('/lastupdatecat',(req,res)=>{
 });
 router.get('/lastdoc',(req,res)=>{
     
-    const uid=req.query.uid;
+    const uid=req.uid;
 
     let docRef = firestore.doc(`users/${uid}`);
     docRef.get()
@@ -331,7 +365,7 @@ router.get('/lastdoc',(req,res)=>{
 });
 
 router.get('/lastupdated',(req,res)=>{
-    const uid =req.query.uid;
+    const uid =req.uid;
 
     let docRef = firestore.doc(`users/${uid}`);
     docRef.get()
@@ -355,8 +389,9 @@ router.get('/lastupdated',(req,res)=>{
  * @return {JSONObject} object of all the types of C02 usage.
  */
 router.post('/createUser',(req,res) =>{
-    var uid =req.body.uid;
-    if(!uid){
+    var uid =req.uid;
+    
+    if(!uid){   
         res.status(404).json({reason:"no uid"});
         return;
     }
@@ -378,7 +413,7 @@ router.post('/createUser',(req,res) =>{
  * @return {JSONObject} time taken for update
  */
 router.post('/createEmission', (req,res) => {
-    var uid  =req.body.uid;
+    var uid  =req.uid;
     var type =req.body.type;
     var total=req.body.total;
     var category=req.body.category;
@@ -421,7 +456,7 @@ router.post('/createEmission', (req,res) => {
  * @return {JSONObject} object of all the types of C02 usage.
  */
 router.post('/createdoc',(req,res)=>{
-    var uid = req.body.uid;
+    var uid = req.uid;
     var date;
     if(req.body.date){
         date=new Date(req.body.date);
@@ -484,7 +519,7 @@ router.post('/createdoc',(req,res)=>{
 
 })
 router.get('/profile',(req,res)=>{
-    var uid = req.query.uid;
+    var uid = req.uid;
 
     let userDoc =firestore.collection('users').doc(uid);
     userDoc.get()
@@ -500,9 +535,8 @@ router.get('/profile',(req,res)=>{
         
 
 })
-
 router.post('/profile',(req,res)=>{
-    var uid =req.body.uid;
+    var uid =req.uid;
     var data=req.body.data;
 
     let userDoc =firestore.collection('users').doc(uid);

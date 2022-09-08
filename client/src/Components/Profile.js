@@ -31,7 +31,7 @@ class Profile extends React.Component{
     apiCall = async () => {
         //calls totaler to make some changes
         if(this.state.user){
-            let res = await fetch(`/api/users/profile?uid=${this.state.user.uid}`);
+            let res = await fetch(`/api/users/profile`);
             res.json().then((profile) =>{
                 console.log("Profile",profile)
                 this.setState({householdSize:profile.householdSize,zipcode:profile.zipcode})
@@ -48,7 +48,6 @@ class Profile extends React.Component{
             data[category]=this.state[category];
             console.log("Data",data)
             var raw = JSON.stringify({
-                "uid":this.state.user.uid,
                 "data":data
             });
             console.log(this.state.data);

@@ -22,35 +22,50 @@ const Login=({isAuth,setIsAuth})=> {
     provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
     await signInWithPopup(auth, provider)
         .then(async (result) => {
-          console.log("Logged In");
+          console.log(result);
           const uid =result.user.uid;
+          await createSessCookie(result);
           let headers =new Headers();
           headers.append("Content-Type", "application/json");
 
-          var raw = JSON.stringify({
-            "uid":uid,
-            });
+          
             var requestOptions = {
-                method: 'POST',
-                headers: headers,
-                body: raw,
-                redirect: 'follow'
+              method: 'POST',
+              headers: headers,
+              redirect: 'follow'
             };
             await fetch("/api/users/createUser", requestOptions)
-                .then(response => response.text())
-                .then(result =>{
-                  console.log(result)
-                  localStorage.setItem("isAuth", true);
-                  setIsAuth(true);
-                  navigate("/home");
-                })
-                .catch(error => console.log('error', error));
+              .then(response => response.text())
+              .then(result =>{
+                console.log(result)
+                localStorage.setItem("isAuth", true);
+                setIsAuth(true);
+                navigate("/home");
+              })
+              .catch(error => console.log('error', error));
             
         }).catch((error) => {
             // Handle Errors here.
             alert(error)
             // ...
         });
+  }
+  const createSessCookie= async(result)=>{
+    await result.user.getIdToken(true)
+            .then(async (token)=>{
+              let new_headers=new Headers();
+              new_headers.append("x-access-token",token)
+              var options = {
+                method: 'GET',
+                headers: new_headers,
+                redirect: 'follow'
+              };
+              await fetch("/api/users/login", options)
+              .then(response => response.json())
+              .then(result =>console.log(result));
+
+            })
+            .catch((err)=>console.log(err))
   }
   
   const login = async (event)=>{
@@ -59,27 +74,26 @@ const Login=({isAuth,setIsAuth})=> {
       .then(async (res)=>{
         console.log("Logged In");
         const uid =res.user.uid;
+        await createSessCookie(res);
+
+
         let headers =new Headers();
         headers.append("Content-Type", "application/json");
 
-        var raw = JSON.stringify({
-          "uid":uid,
-          });
-          var requestOptions = {
-              method: 'POST',
-              headers: headers,
-              body: raw,
-              redirect: 'follow'
-          };
-          await fetch("/api/users/createUser", requestOptions)
-              .then(response => response.text())
-              .then(result =>{
-                console.log(result);
-                localStorage.setItem("isAuth", true);
-                setIsAuth(true);
-                navigate("/home");
-              })
-              .catch(error => console.log('error', error));
+        var requestOptions = {
+          method: 'POST',
+          headers: headers,
+          redirect: 'follow'
+        };
+        await fetch("/api/users/createUser", requestOptions)
+          .then(response => response.text())
+          .then(result =>{
+            console.log(result);
+            localStorage.setItem("isAuth", true);
+            setIsAuth(true);
+            navigate("/home");
+          })
+          .catch(error => console.log('error', error));
         
       })
       .catch((err)=>alert(err));

@@ -15,10 +15,11 @@ const DashNavbar =({ isAuth,setIsAuth })=>{
     const navigate =useNavigate();
     const [user,setUser]=useState({});
     const logout =  async () => {
-        await signOut(auth).then(()=>{
+        await signOut(auth).then(async ()=>{
             setIsAuth(false);
             localStorage.setItem("isAuth",false);
-            navigate("/login")
+            await fetch("/api/users/logout");
+            //navigate("/login")
             
         });
     }

@@ -3,8 +3,7 @@ import {Timestamp} from "firebase/firestore";
 
 
 
-const Totaler  = ({user,span,total})=>{
-    const [lastUpdate,setLastupdate]=useState("");
+const Totaler  = ({lastUpdate,total})=>{
     //const [total,setTotal]=useState({});
 
     //98pounds of c02 is 5gallons of gasoline or .053 acres of forest for one year
