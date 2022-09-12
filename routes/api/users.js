@@ -57,12 +57,12 @@ async function decodeIDToken(req, res, next) {
             .verifySessionCookie(req.headers.cookie.replace("session=",""), true /** checkRevoked */) 
             .then((decodedClaims) => {
                 req.uid=decodedClaims.uid;
-                next();
             })
             .catch((error) => {
             // Session cookie is unavailable or invalid. Force user to login.      
                 res.status(400).json({reason:"Not Authorzied"});
             })
+            .then(next())
     }
     else{
         res.status(400).json({reason:"Not Authorzied"});
