@@ -62,7 +62,7 @@ async function decodeIDToken(req, res, next) {
             // Session cookie is unavailable or invalid. Force user to login.      
                 res.status(400).json({reason:"Not Authorzied"});
             })
-            .then(next())
+            .then(()=>next())
     }
     else{
         res.status(400).json({reason:"Not Authorzied"});
@@ -555,6 +555,35 @@ router.post('/profile',(req,res)=>{
         .catch(()=>res.status(400).json({"reason":"idk"}))
 
 
+
+})
+
+router.get('/soec',(req,res)=>{
+    const uid  =req.uid;
+
+    let docRef = firestore.doc(`users/${uid}`);
+    docRef.get()
+        .then((snap)=>{
+            if(snap.exists){
+                docRef.collection("carbon-emissions").orderBy('date',"desc").limit(1).get().then(query =>{
+                    if(query.empty){
+                        res.status(200).json({});
+                    }else{
+                        query.forEach(doc => {
+                            let data =doc.data();
+                            let obj={};
+                            obj.solar =data.solar || false;
+                            obj.electricCar =data.electricCar || false;
+                            res.status(200).json(obj);
+                            return;
+                        });
+                    }
+                })
+            }else{
+                res.status(400).json({"user":"not found"});
+            }
+
+        })
 
 })
 

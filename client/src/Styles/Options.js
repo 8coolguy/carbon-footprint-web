@@ -20,13 +20,6 @@ export const small_pie_options =  {
             display:false,
             position: 'top',
         },
-        title: {
-            display: false,
-            text: 'Rate of Co2 emissions per day',
-            font:{
-                size:30,
-            }
-        },
     },
 };
 export const line_options= {
@@ -51,8 +44,11 @@ export const total_line_options= {
     plugins:{
         title:{
             display:true,
-            text: "Future Projections"
-
+            text: "Future Projections",
+            font:{
+                size:30,
+                color:"black",
+            }
         }
 
     }

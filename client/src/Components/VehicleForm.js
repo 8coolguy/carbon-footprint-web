@@ -18,6 +18,7 @@ class VehicleForm extends React.Component {
         
         
         this.handleChange = this.handleChange.bind(this);
+        this.handleCheckBox = this.handleCheckBox.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.categories =["electric","gas","carMileage","airMileage","nonveg","veg"]
         
@@ -30,6 +31,8 @@ class VehicleForm extends React.Component {
                       airMileage: '',
                       nonveg: '',
                       veg: '',
+                      electricCar:true,
+                      solar:false,
                       submitted: false,
                       carbonDaily: 0,
                       carbonMonthly: 0,
@@ -53,10 +56,10 @@ class VehicleForm extends React.Component {
         const target = event.target;
         const value = target.value;
         const name = target.name;
-
+        console.log(event);
         this.setState({
             [name]: value
-        });
+        },()=>console.log(this.state));
 
     }
     
@@ -69,7 +72,9 @@ class VehicleForm extends React.Component {
         });
         this.calculateCarbon();
     }
-
+    handleCheckBox(event){
+        this.setState({[event.target.name]:event.target.checked})
+    }
     electric(){
         let total = (5 * this.state.electric / 30); 
         return total;
@@ -115,7 +120,9 @@ class VehicleForm extends React.Component {
                 "airMileage":airMileage,
                 "airMileage-input":this.state.airMileage,
                 "carMileage":carMileage,
-                "carMileage-input":this.state.carMileage
+                "carMileage-input":this.state.carMileage,
+                "solar":this.state.solar,
+                "electricCar":this.state.electricCar,
             }
         }),()=>{this.createDoc()})
     }
@@ -156,7 +163,7 @@ class VehicleForm extends React.Component {
     }
     createDoc(){
             console.log("Update",this.state.data);
-            if(Object.keys(this.state.data).length ===12){
+            if(Object.keys(this.state.data).length ===14){
                 let headers =new Headers();
                 headers.append("Content-Type", "application/json");
                 var raw = JSON.stringify({
@@ -178,7 +185,7 @@ class VehicleForm extends React.Component {
                 };
                 fetch("/api/users/createdoc", requestOptions)
                     .then(response => response.text())
-                    .then(result => console.log(result))
+                    .then(result => console.log("POST",result))
                     .catch(error => console.log('error', error));
             }
         
@@ -191,6 +198,7 @@ class VehicleForm extends React.Component {
                         let datakey = key+"-input";
                         this.setState({[key]:data[datakey]});
                     })
+                    this.setState({solar:data.solar || false, electricCar:data.electricCar||false},()=>console.log(data));
                 })
             return;
     }
@@ -204,39 +212,45 @@ class VehicleForm extends React.Component {
                     <Form.Group className="mb-3" controlId="form">
                     <img width="40" height="40" src={electricIcon} alt="h"></img>
                     <Form.Label>Electricity Bill</Form.Label>
-                    <Form.Control type="text" name="electric" value={this.state.electric} placeholder="Enter this month's electricity bill payment in dollars" onChange={this.handleChange}/>
-                    <input type="checkbox" id="solar" value="Solar"></input>
-                    <label htmlFor="solar"> Solar </label>
+                    <Form.Control type="text" name="electric" value={this.state.electric} placeholder="Enter this month's electricity bill payment in dollars." onChange={this.handleChange}/>
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" controlId="form">
+                        <Form.Check type="checkbox" name="solar" checked={this.state.solar} onChange={this.handleCheckBox} label="Do you have solar panels?" />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="form">
                     <img width="40" height="40" src={gasIcon} alt=""></img>
                     <Form.Label>Gas Bill</Form.Label>
-                    <Form.Control type="number" name="gas" value={this.state.gas} placeholder="Enter this month's gas bill payment in dollars" onChange={this.handleChange}/>
+                    <Form.Control type="number" name="gas" value={this.state.gas} placeholder="Enter this month's gas bill payment in dollars." onChange={this.handleChange}/>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="form">
                     <img width="40" height="40" src="" alt=""></img>
                     <Form.Label>Number of Miles driven per day by non electric vehicles</Form.Label>
-                    <Form.Control type="number" name="carMileage" value={this.state.carMileage} placeholder="Enter number of miles driven per day" onChange={this.handleChange}/>
+                    <Form.Control type="number" name="carMileage" value={this.state.carMileage} placeholder="Enter number of miles driven per day." onChange={this.handleChange}/>
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" controlId="form">
+                        <Form.Check type="checkbox" name="electricCar" checked={this.state.electricCar} onChange={this.handleCheckBox} label="Do you have an electric car?" />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="form">
                     <img width="40" height="40" src={airMileageIcon} alt=""></img>
                     <Form.Label>Air Travel: Miles traveled</Form.Label>
-                    <Form.Control type="number" name="airMileage" value={this.state.airMileage} placeholder="Enter number of miles traveled this year by airplane" onChange={this.handleChange}/>
+                    <Form.Control type="number" name="airMileage" value={this.state.airMileage} placeholder="Enter number of miles traveled this year by airplane." onChange={this.handleChange}/>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="form">
                     <img width="40" height="40" src={nonvegIcon} alt=""></img>
                     <Form.Label>Non-veg servings per week</Form.Label>
-                    <Form.Control type="number" name="nonveg" value={this.state.nonveg} placeholder="Enter the number of non-veg servings you consume per week" onChange={this.handleChange}/>
+                    <Form.Control type="number" name="nonveg" value={this.state.nonveg} placeholder="Enter the number of non-veg servings you consume per week." onChange={this.handleChange}/>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="form">
                     <img width="40" height="40" src={vegIcon} alt=""></img>
                     <Form.Label>Veg servings per week</Form.Label>
-                    <Form.Control type="number" name="veg" value={this.state.veg} placeholder="Enter the number of veg servings you consume per week" onChange={this.handleChange}/>
+                    <Form.Control type="number" name="veg" value={this.state.veg} placeholder="Enter the number of veg servings you consume per week." onChange={this.handleChange}/>
                     </Form.Group>
 
                     <Button variant="primary" type="submit" onClick={this.handleSubmit}>

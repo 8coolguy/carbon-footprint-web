@@ -21,7 +21,7 @@ const CalendarView =({user,setDate,total})=>{
     }, [total])
 
     const apiCall = async () => {
-        if(total!==undefined){
+        if(total.labels){
             
             var arr =[];
             for(var i = 0; i < total.labels.length; i++){

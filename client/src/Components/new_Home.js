@@ -7,6 +7,7 @@ import Projection from "./Projection";
 import LineChart from "./LineChart";
 import Totaler from "./Totaler";
 import PieChart from "./PieChart";
+import Reccomender from "./Reccomendations"
 //Bootstrap Components
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -26,7 +27,8 @@ class Home extends React.Component{
             user:{},
             span:"a",
             total:{},
-            lastUpdate:""
+            lastUpdate:"",
+            soec:{},
 
         }
         
@@ -50,6 +52,8 @@ class Home extends React.Component{
             });
             res=await fetch('/api/users/lastupdated');
             res.json().then((data)=>this.setState({lastUpdate:new Timestamp(data["_seconds"],data["_nanoseconds"]).toDate().toString()}));
+            res =await fetch('/api/users/soec');
+            res.json().then((data)=>this.setState({soec:data}));
         }
     };
     
@@ -63,7 +67,7 @@ class Home extends React.Component{
                 <Container>
                 <Row className="justify-content-md-center">
                     <Col md={6}>
-                    <h1>Carbon Footprint Dashboard</h1>
+                    
                                        
                     <ButtonGroup>
                         <Button onClick={()=>this.setState({span:"w"},()=>this.apiCall())}>Last Week</Button>
@@ -88,18 +92,23 @@ class Home extends React.Component{
                             <PieChart  total={this.state.total}/>
                         </Card>
                     </Col>
-                <Row>
-                    <Col md={8}>
+                    <Row>
+                        <Col md={8}>
+                            <Card>
+                                <Projection years={5} total={this.state.total}/> 
+                            </Card>
+                        </Col>
+                        <Col md={4}>
+                            <Card >
+                                <CalendarView  setDate={this.props.setDate} total={this.state.total}/>
+                            </Card>
+                        </Col>
+                    </Row>
+                    <Row>
                         <Card>
-                            <Projection years={5} total={this.state.total}/> 
+                            <Reccomender soec={this.state.soec} total={this.state.total}/>
                         </Card>
-                    </Col>
-                    <Col md={4}>
-                        <Card >
-                            <CalendarView  setDate={this.props.setDate} total={this.state.total}/>
-                        </Card>
-                    </Col>
-                </Row>
+                    </Row>
                     
                 </Row>
                 </Container>
