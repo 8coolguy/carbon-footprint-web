@@ -7,7 +7,7 @@ import Projection from "./Projection";
 import LineChart from "./LineChart";
 import Totaler from "./Totaler";
 import PieChart from "./PieChart";
-import Reccomender from "./Reccomendations"
+import Reccomender from "./Reccomendations";
 //Bootstrap Components
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -79,7 +79,7 @@ class Home extends React.Component{
                 </Row>
 
                 <Card className="justify-content-md-center">
-                    <Totaler lastUpdate={this.state.lastUpdate} total={this.state.total}/>
+                    <Totaler soec={this.state.soec} lastUpdate={this.state.lastUpdate} total={this.state.total}/>
                 </Card>
                 <Row className="justify-content-md-center">
                     <Col md={8}>
@@ -103,11 +103,6 @@ class Home extends React.Component{
                                 <CalendarView  setDate={this.props.setDate} total={this.state.total}/>
                             </Card>
                         </Col>
-                    </Row>
-                    <Row>
-                        <Card>
-                            <Reccomender soec={this.state.soec} total={this.state.total}/>
-                        </Card>
                     </Row>
                     
                 </Row>

@@ -8,7 +8,7 @@ const Reccomender =({soec,total})=>{
     const meat = "Reduce non veg consumption.";
     
     return(<div>
-        <h1> What can you do to reduce your carbon emissions?</h1>
+        <h3> What can you do to reduce your carbon emissions?</h3>
         <ul style ={{listStyle: "none"}}>
             {total.energy > total.transportation && total.energy> total.food ?<h4> Your largest category is Energy</h4>:<></>}
             {total.transportation > total.energy && total.transportation > total.food ?<h4> Your largest category is Transportation</h4>:<></>}

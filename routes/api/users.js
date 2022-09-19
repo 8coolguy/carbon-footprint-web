@@ -62,10 +62,10 @@ async function decodeIDToken(req, res, next) {
             // Session cookie is unavailable or invalid. Force user to login.      
                 res.status(400).json({reason:"Not Authorzied"});
             })
-            .then(()=>next())
+            .then(()=>next());
     }
     else{
-        res.status(400).json({reason:"Not Authorzied"});
+        //res.status(400).json({reason:"Not Authorzied"});
         res.redirect("/login");
     }
     

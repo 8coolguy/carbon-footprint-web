@@ -1,7 +1,9 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
+import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card'
 //import footpic from './footpriint.ico'
 import {auth} from '../firebase-auth';
@@ -209,48 +211,83 @@ class VehicleForm extends React.Component {
                 <p>Editing: {this.props.date?new Date(this.props.date).toString():"Today"}</p>
                 
                 <Form>
-                    <Form.Group className="mb-3" controlId="form">
-                    <img width="40" height="40" src={electricIcon} alt="h"></img>
-                    <Form.Label>Electricity Bill</Form.Label>
-                    <Form.Control type="text" name="electric" value={this.state.electric} placeholder="Enter this month's electricity bill payment in dollars." onChange={this.handleChange}/>
+                    
+                    <Form.Group as={Row} className="mb-3" controlId="form">
+                    <Col sm={1}>
+                        <img width="40" height="40" src={electricIcon} alt="h"></img>
+                    </Col>
+                    
+                    <Form.Label column sm={6} >Electricity Bill</Form.Label>
+                    
+
+                    
+                    <Col sm={5}>
+                        <Form.Control type="text" name="electric" value={this.state.electric} placeholder="Enter this month's electricity bill payment in dollars." onChange={this.handleChange}/>
+                    </Col>
                     </Form.Group>
+                    
 
                     <Form.Group className="mb-3" controlId="form">
                         <Form.Check type="checkbox" name="solar" checked={this.state.solar} onChange={this.handleCheckBox} label="Do you have solar panels?" />
                     </Form.Group>
 
-                    <Form.Group className="mb-3" controlId="form">
-                    <img width="40" height="40" src={gasIcon} alt=""></img>
-                    <Form.Label>Gas Bill</Form.Label>
+                    <Form.Group as={Row} className="mb-3" controlId="form">
+                    <Col sm={1}>
+                        <img width="40" height="40" src={gasIcon} alt=""></img>
+                    </Col>
+                    <Form.Label column sm={6}>Gas Bill</Form.Label>
+                    
+                    <Col sm={5}>
                     <Form.Control type="number" name="gas" value={this.state.gas} placeholder="Enter this month's gas bill payment in dollars." onChange={this.handleChange}/>
+                    </Col>
                     </Form.Group>
 
-                    <Form.Group className="mb-3" controlId="form">
-                    <img width="40" height="40" src="" alt=""></img>
-                    <Form.Label>Number of Miles driven per day by non electric vehicles</Form.Label>
-                    <Form.Control type="number" name="carMileage" value={this.state.carMileage} placeholder="Enter number of miles driven per day." onChange={this.handleChange}/>
+                    <Form.Group as={Row} className="mb-3" controlId="form">
+                    <Col sm={1}>
+                        <img width="40" height="40" src="" alt=""></img>
+                    </Col>
+                    <Form.Label column sm={6}>Number of Miles driven per day by non electric vehicles</Form.Label>
+                    
+                    <Col sm={5}>
+                        <Form.Control type="number" name="carMileage" value={this.state.carMileage} placeholder="Enter number of miles driven per day." onChange={this.handleChange}/>
+                    </Col>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="form">
                         <Form.Check type="checkbox" name="electricCar" checked={this.state.electricCar} onChange={this.handleCheckBox} label="Do you have an electric car?" />
                     </Form.Group>
 
-                    <Form.Group className="mb-3" controlId="form">
-                    <img width="40" height="40" src={airMileageIcon} alt=""></img>
-                    <Form.Label>Air Travel: Miles traveled</Form.Label>
-                    <Form.Control type="number" name="airMileage" value={this.state.airMileage} placeholder="Enter number of miles traveled this year by airplane." onChange={this.handleChange}/>
+                    <Form.Group as={Row} className="mb-3" controlId="form">
+                        <Col sm={1}>
+                            <img width="40" height="40" src={airMileageIcon} alt=""></img>
+                        </Col>
+                        <Form.Label column sm={6}>Air Travel: Miles traveled</Form.Label>
+                        
+                        <Col sm={5}>
+                            <Form.Control type="number" name="airMileage" value={this.state.airMileage} placeholder="Enter number of miles traveled this year by airplane." onChange={this.handleChange}/>
+                        </Col>
                     </Form.Group>
 
-                    <Form.Group className="mb-3" controlId="form">
-                    <img width="40" height="40" src={nonvegIcon} alt=""></img>
-                    <Form.Label>Non-veg servings per week</Form.Label>
-                    <Form.Control type="number" name="nonveg" value={this.state.nonveg} placeholder="Enter the number of non-veg servings you consume per week." onChange={this.handleChange}/>
+                    <Form.Group as={Row} className="mb-3" controlId="form">
+                        <Col sm={1}>
+                            <img width="40" height="40" src={nonvegIcon} alt=""></img>
+                        </Col>
+                        <Form.Label column sm={6}>Non-veg servings per week</Form.Label>
+                        
+                        <Col sm={5}>
+                            <Form.Control type="number" name="nonveg" value={this.state.nonveg} placeholder="Enter the number of non-veg servings you consume per week." onChange={this.handleChange}/>
+                        </Col>
                     </Form.Group>
 
-                    <Form.Group className="mb-3" controlId="form">
-                    <img width="40" height="40" src={vegIcon} alt=""></img>
-                    <Form.Label>Veg servings per week</Form.Label>
-                    <Form.Control type="number" name="veg" value={this.state.veg} placeholder="Enter the number of veg servings you consume per week." onChange={this.handleChange}/>
+                    <Form.Group as={Row} className="mb-3" controlId="form">
+                        <Col sm={1}>
+                            <img width="40" height="40" src={vegIcon} alt=""></img>
+                        </Col>
+                        <Form.Label column sm={6}>Veg servings per week</Form.Label>
+                        
+                        <Col sm={5}>
+                            <Form.Control type="number" name="veg" value={this.state.veg} placeholder="Enter the number of veg servings you consume per week." onChange={this.handleChange}/>
+                        </Col>
                     </Form.Group>
 
                     <Button variant="primary" type="submit" onClick={this.handleSubmit}>
@@ -267,7 +304,7 @@ class VehicleForm extends React.Component {
                 {/* <Image>variant="top" src="https://www.nicepng.com/png/detail/104-1048345_eco-footprint-we-can-make-a-change-carbon.png" fluid='true' roundedCircle</Image> */}
 
                 <Card>
-                    <Card.Img variant="top" src="https://www.nicepng.com/png/detail/104-1048345_eco-footprint-we-can-make-a-change-carbon.png" fluid='true' roundedCircle/>
+                    <Card.Img  height="360" width="360"  variant="top" src="https://www.nicepng.com/png/detail/104-1048345_eco-footprint-we-can-make-a-change-carbon.png" fluid='true' roundedCircle/>
                     <Card.Title>Your total Carbon Footprint:</Card.Title>
                     <Card.Body><b>{parseInt(this.state.carbonDaily).toString()}</b> lbs of CO2 per day, <b>{parseInt(this.state.carbonMonthly).toString()}</b> lbs of CO2 per month, and <b>{parseInt(this.state.carbonYearly).toString()}</b> lbs of CO2 per year.</Card.Body>
                 </Card>
