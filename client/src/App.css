@@ -23,7 +23,16 @@
   font-size: calc(10px + 2vmin);
   color: green;
 }
-
+.profile {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+  flex-wrap: wrap;
+}
+.profile_container{
+  padding: 10%;
+}
 .App-link {
   color: #61dafb;
 }
