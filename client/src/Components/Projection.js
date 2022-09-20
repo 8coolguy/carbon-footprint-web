@@ -1,33 +1,19 @@
-import React,{useState,useEffect} from 'react';
+import React, {useState} from 'react';
 import {Chart, registerables} from "chart.js";
 
 import {colors} from "../Styles/Colors";
 import {Line} from 'react-chartjs-2';
 import {total_line_options} from "../Styles/Options";
+import Slider from 'rc-slider';
+import '../Styles/index.css';
 
-import {line_options} from "../Styles/Options";
 
 
-const Projection = ({user,span,years,total}) =>{
+
+const Projection = ({user,span,total}) =>{
     //const [total,setTotal] =useState({});
     Chart.register(...registerables);
-    
-
-    // const apiCall = async () => {
-    //     //calls totaler to make some changes
-    //     if(user){
-    //         let res = await fetch(`/api/users/totaler?uid=${user.uid}&span=${span}`);
-    //         res.json().then((data) =>{
-    //             setTotal(data);
-    //         });
-    //     }
-    // };
-    
-    // useEffect(() => {
-    //     if(user !== undefined && span){
-    //         apiCall();
-    //     }
-    // }, [span,user])
+    const [years,setYears] =useState(3);
 
     let new_colors={
         ...colors
@@ -48,38 +34,58 @@ const Projection = ({user,span,years,total}) =>{
         }else{
             return a.map((date)=>new Date(date));
         }
-        
     }
     const arrToPoint =(dates,values,years) =>{
         let res=[];
         if(!dates || !values){
             return res
         }
+        let tsTon =[];
         for(let i =0; i<dates.length;i++){
+            tsTon.push(i)
             let obj={};
             obj.x =dates[i].toUTCString();
             obj.y =values[i]
             res.push(obj);
             
         }
-        let tenypred={};
-        let tenyear =new Date();
-        tenyear.setUTCFullYear(tenyear.getUTCFullYear()+years);
-        tenypred.x=tenyear;
-        if(span==="a"){
-            tenypred.y=years*total.total;
-        }else if(span==="y"){
-            tenypred.y=years*total.total;
-        }else if(span==="m"){
-            tenypred.y=12*years*total.total;
-        }else{
-            tenypred.y=52*years*total.total;
-        }
+        let pred={};
         
-        res.push(tenypred);
+        let pred_date =new Date();
+        
+        pred_date.setUTCFullYear(pred_date.getUTCFullYear()+years);
+        const regression =simpleRegression(tsTon,values)
+        pred.x=pred_date;
+        pred.y =((values.length-1)+((pred_date- Date.now())/(60*60*24*1000)))*regression.slope +regression.intercept
+        res.push({x:Date.now(),y:NaN})
+        res.push(pred)
+        
+        
         return res;
 
     }
+    const simpleRegression =(x,y)=>{
+        let lr={};
+        
+        var n = y.length;
+        var sum_x = 0;
+        var sum_y = 0;
+        var sum_xy = 0;
+        var sum_xx = 0;
+        
+
+        for (var i = 0; i < y.length; i++) {
+
+            sum_x += x[i];
+            sum_y += y[i];
+            sum_xy += (x[i]*y[i]);
+            sum_xx += (x[i]*x[i]);
+        }
+        lr['slope'] = (n * sum_xy - sum_x * sum_y) / (n*sum_xx - sum_x * sum_x);
+        lr['intercept'] = (sum_y - lr.slope * sum_x)/n;
+        return lr;
+    }
+    const skipped = (ctx, value) => ctx.p0.skip || ctx.p1.skip ? value : undefined;
     const line_data=React.useMemo(()=>({
         
         datasets:[{
@@ -87,11 +93,10 @@ const Projection = ({user,span,years,total}) =>{
                 "fill":false,
                 "borderColor":new_colors["total"],
                 "data":arrToPoint(strToDate(total.labels),cumSumArr(total["total-date"]),years),
-                trendlineLinear: {
-                    style: "grey",
-                    lineStyle: "line",
-                    width: 1
-                }
+                segment: {
+                    borderDash: ctx => skipped(ctx, [6, 6]),
+                  }, 
+                  spanGaps: true
             }],
         plugins:{
         title:{
@@ -106,7 +111,9 @@ const Projection = ({user,span,years,total}) =>{
 
     return(
         <div>
+            
             <Line options={total_line_options} data={line_data}></Line>
+            <Slider width="70%" min={1} max={30} value={years} onChange={(value)=>setYears(value)} />
         </div>
     )   
 }
