@@ -397,7 +397,7 @@ router.post('/createUser',(req,res) =>{
     }
     let newUser = firestore.collection('users').doc(uid);
     newUser.create({
-        "last_update":new Date()
+        last_update:new Date()
     })
         .then((ret)=>res.status(200).json(ret))
         .catch((err)=>res.status(200).json({reason:err}));
@@ -470,7 +470,7 @@ router.post('/createdoc',(req,res)=>{
         //check if user exists
         if(snap.exists){
             let last_update =snap.data()["last_update"]
-            //create new doc for the day in data'
+            console.log(snap.data())
             last_update =MoDaYeDate.of(last_update["_seconds"],last_update["_nanoseconds"])
             let currentDate=new MoDaYeDate(Timestamp.now().toDate());
             if(date){
