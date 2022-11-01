@@ -299,26 +299,14 @@ class VehicleForm extends React.Component {
         );
 
         const footprint = (
-            <div>
-
-                {/* <Image>variant="top" src="https://www.nicepng.com/png/detail/104-1048345_eco-footprint-we-can-make-a-change-carbon.png" fluid='true' roundedCircle</Image> */}
+            <div className="footprint">
 
                 <Card>
-                    <Card.Img  height="360" width="360"  variant="top" src="https://www.nicepng.com/png/detail/104-1048345_eco-footprint-we-can-make-a-change-carbon.png" fluid='true' roundedCircle/>
+                    <Card.Img  height="540" width="540" src="https://www.nicepng.com/png/detail/104-1048345_eco-footprint-we-can-make-a-change-carbon.png" fluid='true' roundedCircle/>
                     <Card.Title>Your total Carbon Footprint:</Card.Title>
                     <Card.Body><b>{parseInt(this.state.carbonDaily).toString()}</b> lbs of CO2 per day, <b>{parseInt(this.state.carbonMonthly).toString()}</b> lbs of CO2 per month, and <b>{parseInt(this.state.carbonYearly).toString()}</b> lbs of CO2 per year.</Card.Body>
                 </Card>
 
-                {/* 
-                    <header1>electric = {(this.state.electric).toString()}</header1>
-                    <header1>gas = {(this.state.gas).toString()}</header1>
-                    <header1>carMileage = {(this.state.carMileage).toString()}</header1>
-                    <header1>airMileage = {(this.state.airMileage).toString()}</header1>
-                    <header1>nonveg = {(this.state.nonveg).toString()}</header1>
-                    <header1>veg = {(this.state.veg).toString()}</header1> 
-                */}
-
-                {/* <header> Your total carbon footprint is: {parseInt(this.state.carbonDaily).toString()} lbs of CO2 per day, {parseInt(this.state.carbonMonthly).toString()} lbs of CO2 per month, and {parseInt(this.state.carbonYearly).toString()} lbs of CO2 per year.</header> */}
             </div>
         )
         return (this.state.submitted ? footprint : form);

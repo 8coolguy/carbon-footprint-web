@@ -25,13 +25,16 @@
 }
 .profile {
   display: flex;
-  flex-direction: row;
   justify-content: center;
   align-content: center;
-  flex-wrap: wrap;
 }
-.profile_container{
-  padding: 10%;
+.footprint {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.profile-container{
+  padding: 25px;
 }
 .App-link {
   color: #61dafb;
