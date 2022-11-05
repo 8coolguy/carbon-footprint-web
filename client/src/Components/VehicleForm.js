@@ -12,7 +12,7 @@ import gasIcon from "../images/gas.png";
 import vegIcon from "../images/veg.png";
 import nonvegIcon from "../images/nonveg.png";
 import airMileageIcon from "../images/airMileage.png";
-
+import carIcon from "../images/car.png"
 
 class VehicleForm extends React.Component {
     constructor(props) {
@@ -244,7 +244,7 @@ class VehicleForm extends React.Component {
 
                     <Form.Group as={Row} className="mb-3" controlId="form">
                     <Col sm={1}>
-                        <img width="40" height="40" src="" alt=""></img>
+                        <img width="40" height="40" src={carIcon} alt=""></img>
                     </Col>
                     <Form.Label column sm={6}>Number of Miles driven per day by non electric vehicles</Form.Label>
                     
@@ -290,11 +290,9 @@ class VehicleForm extends React.Component {
                         </Col>
                     </Form.Group>
 
-                    <Button variant="primary" type="submit" onClick={this.handleSubmit}>
-                    Submit
-                    </Button>
+                    
                 </Form>
-                
+                <Button variant="primary" type="submit" onClick={this.handleSubmit}>Submit</Button>
             </div>
         );
 
