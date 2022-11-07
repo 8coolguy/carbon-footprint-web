@@ -1,12 +1,14 @@
 import React from "react";
 import {auth} from '../firebase-auth';
-
+import Form from 'react-bootstrap/Form';
 import Editable from "./Editable";
 
 //bootstrap
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";  
-import Card from 'react-bootstrap/Card' 
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
+
 //import { Pencil } from 'react-bootstrap-icons';
 
 class Profile extends React.Component{
@@ -65,10 +67,15 @@ class Profile extends React.Component{
             });
         }
     }
+    handleSubmit = async(event)=>{
+        event.preventDefault();
+        await this.updateProfile("householdSize");
+        await this.updateProfile("zipcode");
+    }
     
     render(){
         return(
-            <div className="profile">
+            <div className="App-header profile">
                 
                 <Card className="profile-container">
                     {this.state.user.photoURL?<img src={this.state.user.photoURL} referrerPolicy="no-referrer" alt="" width="120" height="120" className="justify-content-md-center rounded-circle me-2"></img>:<img src="https://www.nicepng.com/png/detail/73-730154_open-default-profile-picture-png.png" referrerPolicy="no-referrer" alt="" width="120" height="120" className="rounded-circle me-2"></img>}
@@ -80,7 +87,7 @@ class Profile extends React.Component{
                                 name="householdSize"
                                 placeholder="Household Size"
                                 value={this.state.householdSize}
-                                onChange={e => this.setState({householdSize:e.target.value},()=>this.updateProfile(e.target.name))}
+                                onChange={e => this.setState({householdSize:e.target.value})}
                             />  
                         </Editable>
                     
@@ -91,13 +98,14 @@ class Profile extends React.Component{
                                 name="zipcode"
                                 placeholder="Zipcode"
                                 value={this.state.zipcode}
-                                onChange={e => this.setState({zipcode:e.target.value},()=>this.updateProfile(e.target.name))}
+                                onChange={e => this.setState({zipcode:e.target.value})}
                             />
                         </Editable>
                     
 
-                </Card>
                 
+                <Button variant="primary" type="submit" onClick={this.handleSubmit}>Change</Button>
+                </Card>
             </div>
 
         )

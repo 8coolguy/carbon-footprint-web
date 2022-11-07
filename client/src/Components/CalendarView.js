@@ -8,7 +8,7 @@ import {Pie} from 'react-chartjs-2';
 import {small_pie_options} from "../Styles/Options";
 import Calendar from 'react-calendar';
 
-import "../Styles/Calendar.css";
+//mport "../Styles/Calendar.css";
 
 const CalendarView =({user,setDate,total})=>{
     const [cal_data,setData]=useState([]);
@@ -91,10 +91,10 @@ const CalendarView =({user,setDate,total})=>{
     }
     
     return(
-        <div>
+        <>
             <h2>Edit entries:</h2>
-            <Calendar className="react-calendar justify-content-md-center" tileContent={({ activeStartDate, date, view }) =>createPies(date,view)} maxDate={new Date()} onClickDay={(value, event) => onDayClick(value,event)}/> 
-        </div>
+            <Calendar className="react-calendar" tileContent={({ activeStartDate, date, view }) =>createPies(date,view)} maxDate={new Date()} onClickDay={(value, event) => onDayClick(value,event)}/> 
+        </>
 
 
     )

@@ -15,10 +15,10 @@ export const pie_options = {
   };
 export const small_pie_options =  {
     responsive: true,
+    events:[],
     plugins: {
         legend: {
             display:false,
-            position: 'top',
         },
     },
 };
@@ -53,3 +53,4 @@ export const total_line_options= {
 
     }
 }
+

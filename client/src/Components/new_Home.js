@@ -1,5 +1,4 @@
 import React from 'react';
-import {HomeContainer} from '../Styles/Home.Style'; 
 import {Timestamp} from 'firebase/firestore';
 import {auth} from '../firebase-auth';
 import 'chartjs-adapter-moment';
@@ -17,7 +16,6 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Card from 'react-bootstrap/Card' ;
 
 import CalendarView from "./CalendarView";
-import 'react-calendar/dist/Calendar.css';
 
 
 class Home extends React.Component{
@@ -63,35 +61,45 @@ class Home extends React.Component{
     render(){
         
         const layout =(
-            <HomeContainer>
+            <div className="Home">
                 <Container>
                 <Row className="justify-content-md-center">
-                    <Col md={6}>
                     
-                                       
-                    <ButtonGroup>
-                        <Button onClick={()=>this.setState({span:"w"},()=>this.apiCall())}>Last Week</Button>
-                        <Button onClick={()=>this.setState({span:"m"},()=>this.apiCall())}>Last Month</Button>
-                        <Button onClick={()=>this.setState({span:"y"},()=>this.apiCall())}>Last Year</Button>
-                        <Button onClick={()=>this.setState({span:"a"},()=>this.apiCall())}> All Data </Button>
-                    </ButtonGroup>
-                    </Col>
                 </Row>
 
-                <Card className="justify-content-md-center">
-                    <Totaler soec={this.state.soec} lastUpdate={this.state.lastUpdate} total={this.state.total}/>
-                </Card>
+                
                 <Row className="justify-content-md-center">
-                    <Col md={8}>
-                        <Card>
-                            <LineChart  total={this.state.total}/>
-                        </Card>
+                    <Row>
+                        <Col md={8}>
+                            <Card>
+                                <LineChart  total={this.state.total}/>
+                            </Card>
+                        </Col>
+                        <Col md={4}>
+                            <Card>
+                                <PieChart  total={this.state.total}/>
+                            </Card>
+                        </Col>
+                    </Row>
+
+
+
+
+
+                    <Card className="justify-content-md-center">
+                        <Totaler soec={this.state.soec} lastUpdate={this.state.lastUpdate} total={this.state.total}/>
+                    </Card>
+
+                    <Col md={6}>            
+                        <ButtonGroup>
+                            <Button onClick={()=>this.setState({span:"w"},()=>this.apiCall())}>Last Week</Button>
+                            <Button onClick={()=>this.setState({span:"m"},()=>this.apiCall())}>Last Month</Button>
+                            <Button onClick={()=>this.setState({span:"y"},()=>this.apiCall())}>Last Year</Button>
+                            <Button onClick={()=>this.setState({span:"a"},()=>this.apiCall())}> All Data </Button>
+                        </ButtonGroup>
                     </Col>
-                    <Col md={4}>
-                        <Card>
-                            <PieChart  total={this.state.total}/>
-                        </Card>
-                    </Col>
+
+
                     <Row>
                         <Col md={8}>
                             <Card>
@@ -107,7 +115,7 @@ class Home extends React.Component{
                     
                 </Row>
                 </Container>
-            </HomeContainer>
+            </div>
         );
         return layout;
         //<h2>{this.state.user.displayName} pounds of emissions</h2>

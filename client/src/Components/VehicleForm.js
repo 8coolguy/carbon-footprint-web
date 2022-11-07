@@ -1,6 +1,6 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import Form from 'react-bootstrap/Form'
+import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -66,8 +66,6 @@ class VehicleForm extends React.Component {
     }
     
     handleSubmit(event) {
-        
-        
         event.preventDefault();
         this.setState({
             submitted: true
