@@ -56,7 +56,7 @@ const DashNavbar =({ isAuth,setIsAuth })=>{
             {isAuth==="true" || isAuth===true?
             <Navbar bg="light"  expand="lg"> 
                 <Container >
-                    <Navbar.Brand href="/home">
+                    <Navbar.Brand href="/">
                         <Col>
                         <img style={{height:"3pc",width:"5pc"}}src={logo}/>
                         Carbon Footprint Tracker
