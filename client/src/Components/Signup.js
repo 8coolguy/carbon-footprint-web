@@ -110,6 +110,7 @@ const Signup =({isAuth,setIsAuth})=>{
 
 
     return(
+        <div className="Home">
         <FormContainer>
             <form onSubmit={register}>
                 
@@ -124,6 +125,7 @@ const Signup =({isAuth,setIsAuth})=>{
             <button onClick={googleSignUp} type="button" className="login-with-google-btn" >Sign in with Google</button>
             <Link to="/login">Already have an account?</Link>
         </FormContainer>
+        </div>
     )
 
 }

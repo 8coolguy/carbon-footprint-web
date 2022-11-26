@@ -6,6 +6,7 @@ import Home from './Components/new_Home';
 import DashNavbar from './Components/Navbar';
 import VehicleForm from "./Components/VehicleForm";
 import PasswordReset from "./Components/PasswordReset";
+import Landing from "./Components/Landing";
 import React,{useState} from 'react';
 import {BrowserRouter as Router,Route,Routes} from "react-router-dom";
 function App() {
@@ -16,6 +17,7 @@ function App() {
     
     <DashNavbar isAuth={isAuth} setIsAuth={setIsAuth}/>
     <Routes>
+      <Route path="/" element={<Landing/>}></Route>
       <Route path="/login" element={<Login isAuth={isAuth} setIsAuth={setIsAuth}/>}></Route>
       <Route path="/signup" element={<Signup isAuth={isAuth} setIsAuth={setIsAuth}/>}></Route>
       <Route path="/home" element={<Home setDate={setDate} isAuth={isAuth}/>}></Route>

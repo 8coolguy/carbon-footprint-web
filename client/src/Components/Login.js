@@ -99,6 +99,7 @@ const Login=({isAuth,setIsAuth})=> {
       .catch((err)=>alert(err));
   }
   return (
+    <div className="Home">
     <FormContainer>
       
       <form onSubmit={login}>
@@ -113,7 +114,9 @@ const Login=({isAuth,setIsAuth})=> {
       <button type="button" className="login-with-google-btn"  onClick={googleLogin}>Login with Google</button>
       <Link to="/signup">New User?</Link>
       <Link to="/frogot">Frogot Password</Link>
+      <Link to="/">Landing</Link>
     </FormContainer>
+    </div>
   )
 }
 

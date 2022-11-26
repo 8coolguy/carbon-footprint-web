@@ -22,14 +22,16 @@ const PasswordReset =()=>{
 
 
     return (
+        <div className="Home">
         <FormContainer>
             <form onSubmit={frogotPassword}>
                 <label>Email</label>
                 <input value={email} onChange={(event) =>{setEmail(event.target.value);}}></input>
-                <button type="submit">Frogot Password</button>
+                <button type="submit">Submit</button>
             </form>
             <Link to="/login">Login</Link>
         </FormContainer>
+        </div>
 
 
     )
