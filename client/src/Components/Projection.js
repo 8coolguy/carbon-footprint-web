@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
-import {Chart, registerables} from "chart.js";
+import {Chart, registerables,defaults} from "chart.js";
 
 import {colors} from "../Styles/Colors";
 import {Line} from 'react-chartjs-2';
+
 import {total_line_options} from "../Styles/Options";
 import Slider from 'rc-slider';
 import '../Styles/index.css';
@@ -14,7 +15,7 @@ const Projection = ({user,span,total}) =>{
     //const [total,setTotal] =useState({});
     Chart.register(...registerables);
     const [years,setYears] =useState(3);
-
+    defaults.font.family='Exo';
     let new_colors={
         ...colors
     };

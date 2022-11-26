@@ -205,7 +205,9 @@ class VehicleForm extends React.Component {
 
     render(){
         const form = (
+            
             <div className="App-header">
+                <Card>
                 <p>Editing: {this.props.date?new Date(this.props.date).toString():"Today"}</p>
                 
                 <Form>
@@ -291,7 +293,9 @@ class VehicleForm extends React.Component {
                     
                 </Form>
                 <Button variant="primary" type="submit" onClick={this.handleSubmit}>Submit</Button>
+                </Card>
             </div>
+            
         );
 
         const footprint = (

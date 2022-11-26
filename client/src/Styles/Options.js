@@ -6,10 +6,11 @@ export const pie_options = {
         },
         title: {
             display: true,
-            text: 'Rate of Co2 emissions per day',
+            text: 'Distrubution of Emissions',
             font:{
-                size:30,
-            }
+                size:24,
+            },
+            color:"black",
         },
     },
   };
@@ -29,8 +30,9 @@ export const line_options= {
             display: true,
             text: 'Average Co2 emissions per day',
             font:{
-                size:30,
-            }
+                size:24,
+            },
+            color:"black"
         },
     }
 }
@@ -46,10 +48,14 @@ export const total_line_options= {
             display:true,
             text: "Future Projections",
             font:{
-                size:30,
-                color:"black",
-            }
-        }
+                size:24,
+                
+            },
+            
+            color:"black",
+            
+        },
+        
 
     }
 }

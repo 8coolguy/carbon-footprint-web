@@ -18,6 +18,8 @@ import Card from 'react-bootstrap/Card' ;
 import CalendarView from "./CalendarView";
 
 
+
+
 class Home extends React.Component{
     constructor(){
         super();
@@ -63,13 +65,10 @@ class Home extends React.Component{
         const layout =(
             <div className="Home">
                 <Container>
-                <Row className="justify-content-md-center">
-                    
-                </Row>
 
                 
-                <Row className="justify-content-md-center">
-                    <Row>
+                
+                    <Row className="dashboard-comp">
                         <Col md={8}>
                             <Card>
                                 <LineChart  total={this.state.total}/>
@@ -86,34 +85,30 @@ class Home extends React.Component{
 
 
 
-                    <Card className="justify-content-md-center">
+                    <Card className="dashboard-comp">
                         <Totaler soec={this.state.soec} lastUpdate={this.state.lastUpdate} total={this.state.total}/>
-                    </Card>
-
-                    <Col md={6}>            
                         <ButtonGroup>
                             <Button onClick={()=>this.setState({span:"w"},()=>this.apiCall())}>Last Week</Button>
                             <Button onClick={()=>this.setState({span:"m"},()=>this.apiCall())}>Last Month</Button>
                             <Button onClick={()=>this.setState({span:"y"},()=>this.apiCall())}>Last Year</Button>
                             <Button onClick={()=>this.setState({span:"a"},()=>this.apiCall())}> All Data </Button>
                         </ButtonGroup>
-                    </Col>
+                    </Card>
 
-
-                    <Row>
+                    <Row className="dashboard-comp">
                         <Col md={8}>
                             <Card>
                                 <Projection years={5} total={this.state.total}/> 
                             </Card>
                         </Col>
                         <Col md={4}>
-                            <Card >
+                            <Card>
                                 <CalendarView  setDate={this.props.setDate} total={this.state.total}/>
                             </Card>
                         </Col>
                     </Row>
                     
-                </Row>
+                
                 </Container>
             </div>
         );

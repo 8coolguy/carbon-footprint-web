@@ -52,10 +52,10 @@ const DashNavbar =({ isAuth,setIsAuth })=>{
     
     return (
         
-        <div>
+        <div className="nav-font">
             {isAuth==="true" || isAuth===true?
             <Navbar bg="light"  expand="lg"> 
-                <Container>
+                <Container >
                     <Navbar.Brand href="/home">
                         <Col>
                         <img style={{height:"3pc",width:"5pc"}}src={logo}/>

@@ -1,6 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Exo:wght@300;400;500&display=swap");
+
 .App {
   text-align: center;
+  
 }
+
 
 .App-logo {
   height: 40vmin;
@@ -12,8 +16,11 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
-
+.nav-font{
+  font-family: 'Exo',Verdana, Geneva, Tahoma, sans-serif;
+}
 .App-header {
+  font-family: 'Exo',Verdana, Geneva, Tahoma, sans-serif;
   background-color: #7F8C8D;
   min-height: 100vh;
   display: flex;
@@ -24,27 +31,33 @@
   color: black;
 }
 .Home {
+  font-family: 'Exo',Verdana, Geneva, Tahoma, sans-serif;
   background-color: #7F8C8D;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /*font-size: calc(10px + 2vmin);*/
+  font-size: calc(10px + 2vmin);
   color: green;
-  padding:20px;
+  padding:2rem;
   text-align:center;
   justify-content: center;
   align-items: center;
-  h1{
-        
-    padding:10px;
-  };
-  h2{
-    padding :10px;
-  }
+  
 }
+.dashboard-comp{
+  padding: 2rem;
+  
 
+
+}
+.calendar-container
+{
+  display: block;
+  align-items: center;
+  justify-content: center;
+}
 .profile {
   display: flex;
   justify-content: center;
@@ -75,13 +88,16 @@
 
 
 .react-calendar {
-  width: 95%;
+  font-size: 24px;
+  
+  width: 100%;
   align-items: center;
   justify-content: center;
   max-width: 100%;
+  
   background: white;
   border: 1px solid #a0a096;
-  font-family: Arial, Helvetica, sans-serif;
+  
   line-height: 1.125em;
 }
 .react-calendar--doubleView {
@@ -143,11 +159,9 @@
   align-items: center;
   justify-content: center;
   font-size: 0.75em;
+  font-weight: bold;
   padding: calc(0.75em / 0.75) calc(0.5em / 0.75);
 }
-/*.react-calendar__month-view__days__day--weekend {
-  color: #ffffa9;
-}*/
 .react-calendar__month-view__days__day--neighboringMonth {
   color: #757575;
 }
@@ -194,6 +208,10 @@
 }
 .react-calendar--selectRange .react-calendar__tile--hover {
   background-color: #e6e6e6;
+}
+.react-calendar__navigation__label__labelText,
+.react-calendar__navigation__label__labelText--from{
+  font-weight: bold;
 }
 
 

@@ -91,10 +91,9 @@ const CalendarView =({user,setDate,total})=>{
     }
     
     return(
-        <>
-            <h2>Edit entries:</h2>
+        <div className="calendar-container">
             <Calendar className="react-calendar" tileContent={({ activeStartDate, date, view }) =>createPies(date,view)} maxDate={new Date()} onClickDay={(value, event) => onDayClick(value,event)}/> 
-        </>
+        </div>
 
 
     )

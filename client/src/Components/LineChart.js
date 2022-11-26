@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import {Chart, registerables} from "chart.js";
+import {Chart, registerables,defaults} from "chart.js";
 
 import {colors} from "../Styles/Colors";
 import {Line} from 'react-chartjs-2';
@@ -8,7 +8,7 @@ import {line_options} from "../Styles/Options";
 const LineChart = ({user,span,total}) =>{
     //const [total,setTotal] =useState({});
     Chart.register(...registerables);
-
+    defaults.font.family='Exo';
     // const apiCall = async () => {
     //     //calls totaler to make some changes
     //     if(user){

@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-import {Chart, registerables} from "chart.js";
+import {Chart, registerables,defaults} from "chart.js";
 
 import {colors} from "../Styles/Colors";
 import {Pie} from 'react-chartjs-2';
@@ -9,7 +9,7 @@ import {pie_options} from "../Styles/Options";
 const PieChart = ({user,span,total}) =>{
     //const [total,setTotal]=useState({});
     Chart.register(...registerables);
-
+    defaults.font.family='Exo';
     // const apiCall = async () => {
     //     console.log("Pie Chart",user,span);
     //     if(user){
