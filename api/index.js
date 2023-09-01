@@ -20,10 +20,10 @@ app.use(morgan('dev'));
 //set up routes
 app.use('/api/users',users);
 
-app.use(express.static(path.join(__dirname+'/client/', 'build')));
+app.use(express.static(path.join(__dirname+'/../client/', 'build')));
 //for deployment
 app.get('/*', function (req, res) {
-    res.sendFile(path.join(__dirname+'/client/', 'build', 'index.html'));
+    res.sendFile(path.join(__dirname+'/../client/', 'build', 'index.html'));
 });
 
 
